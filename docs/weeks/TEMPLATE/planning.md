@@ -8,33 +8,23 @@
 
 ## Tasks
 
-- [ ] **Task:**
-  - Why it matters this week:
-  - Owner:
-  - Expected output:
-  - Due date:
-  - Related research question / GitHub issue:
+- [ ] **Task:** — **Owner:** — **Due date:**
 
 ## Research questions
 
 1. **Question:**
-   - Why this question matters:
-   - What evidence or answer would help:
-   - Owner:
+   - Related task (if any):
 
 ## Thursday meeting preparation
 
 ### Questions for instructors or university staff
 
 1. **Question:**
-   - Context:
-   - What we need clarified:
+   - Context (optional):
 
 ### Topics or decisions to resolve
 
 - [ ] **Topic / decision:**
-  - Background:
-  - Desired outcome:
 
 ## Links
 
