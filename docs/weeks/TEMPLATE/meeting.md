@@ -3,6 +3,8 @@
 ## Meeting details
 
 - Date / time:
+- Attendees:
+- Location:
 
 ### Questions and issues to resolve
 
