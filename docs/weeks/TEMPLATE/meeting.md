@@ -3,35 +3,22 @@
 ## Meeting details
 
 - Date / time:
-- Meeting type:
-- Attendees (only if appropriate to record):
 
-## Agenda and questions
+### Questions and issues to resolve
 
-Use the preparation in [`planning.md`](planning.md) and relevant findings from [`research.md`](research.md).
+List the questions the team agreed to ask before the meeting and the issues it hopes to resolve. See [`planning.md`](planning.md) for weekly preparation and [`research.md`](research.md) for supporting findings.
 
-- Add notes here.
+- **Question / issue:**
+
 ## Summary
 
-- Add notes here.
-## Decisions
+- Briefly summarize the discussion.
 
-- Decision:
-  - Rationale / context:
-  - Owner (if applicable):
+## Answers and decisions
+
+- **Question:**
+  - Answer / decision:
 
 ## Unresolved questions
 
-- Question:
-  - Owner:
-  - Next step / due date:
-
-## Follow-up actions
-
-- [ ] Action — owner — due date — [GitHub issue](ISSUE_URL)
-
-## Links
-
-- Planning record: [`planning.md`](planning.md)
-- Research record: [`research.md`](research.md)
-- Approved meeting materials:
+- **Question / issue:**
