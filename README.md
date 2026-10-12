@@ -9,12 +9,17 @@ We are at the project kickoff stage. Our current work is to frame the problem, r
 ```text
 docs/
 ├── project/                              # Project framing, scope, requirements, open questions
-├── weekly-planning/
-│   ├── README.md                         # How to plan and record each week
-│   └── weeks/
-│       └── TEMPLATE.md                   # Todo, research, and Thursday meeting record
+├── weeks/
+│   ├── README.md                         # Weekly record workflow and naming convention
+│   └── YYYY-MM-DD/                       # One folder per week, named with that week's Monday
+│       ├── planning.md                   # Weekly goals, tasks, owners, and meeting preparation
+│       ├── research.md                   # Research process, findings, and limitations
+│       └── meeting.md                     # Meeting notes, decisions, and follow-up actions
+│   └── TEMPLATE/                         # Starter files to copy into each dated week folder
+│       ├── planning.md
+│       ├── research.md
+│       └── meeting.md
 └── research/
-    ├── README.md                         # How weekly records use the reusable source catalog
     └── sources/
         ├── README.md                     # Source catalog instructions
         └── source-index.md               # Central index of sources reviewed or queued
@@ -23,16 +28,16 @@ docs/
 ### Directory purposes
 
 - **`docs/project/`** — Keep the current problem framing, project goals, scope, and questions that need confirmation.
-- **`docs/weekly-planning/weeks/`** — Keep one dated record per week containing priorities, research tasks and findings, Thursday meeting preparation and outcomes, and follow-up actions.
+- **`docs/weeks/YYYY-MM-DD/`** — Keep one folder per week, named with that week's Monday date. Store separate `planning.md`, `research.md`, and `meeting.md` records together so the week's preparation, research, and decisions are easy to follow.
 - **`docs/research/sources/`** — Keep a reusable source catalog. Give each source one stable ID and refer to it from weekly records instead of duplicating its citation.
 
 ## Weekly workflow
 
-1. Copy `docs/weekly-planning/weeks/TEMPLATE.md` to `docs/weekly-planning/weeks/YYYY-MM-DD.md`, using the Monday date for that week.
-2. At the start of the week, add the todo items, research questions, owners, and expected outputs.
-3. During research, register each source once in `docs/research/sources/source-index.md`, then cite its ID in the weekly record and summarize findings and limitations there.
-4. Before Thursday's meeting, add questions, context, and the clarification or decision needed.
-5. After the meeting, record outcomes, unresolved questions, owners, and follow-up actions in the same weekly file. Link any GitHub issues or approved meeting materials.
+1. Copy the templates in `docs/weeks/TEMPLATE/` to a new folder such as `docs/weeks/2026-10-12/`, using that week's Monday date.
+2. At the start of the week, complete `planning.md` with goals, todo items, research questions, owners, expected outputs, and Thursday meeting preparation.
+3. During research, register each source once in `docs/research/sources/source-index.md`; cite its stable ID in `research.md` and summarize findings and limitations there.
+4. After Thursday's meeting, record outcomes, decisions, unresolved questions, owners, and follow-up actions in `meeting.md`.
+5. Link the three weekly records to one another and include relevant GitHub issues or approved meeting materials.
 
 ## Information handling
 

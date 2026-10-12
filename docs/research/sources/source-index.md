@@ -1,8 +1,8 @@
 # Source Index
 
-Add each source once. Use stable IDs in weekly research records so sources can be found and reused across weeks.
+Add each source once. Use stable IDs in weekly `research.md` records (under `docs/weeks/YYYY-MM-DD/`) so sources can be found and reused across weeks.
 
-| ID | Citation (title, author, year, publication) | DOI or stable URL | Status | Reviewed by / date | Used in weekly records | Notes |
+| ID | Citation (title, author, year, publication) | DOI or stable URL | Status | Reviewed by / date | Used in weekly folders | Notes |
 |---|---|---|---|---|---|---|
 |  |  |  | Planned / To read / Read / Used |  |  |  |
 
@@ -13,4 +13,4 @@ Add each source once. Use stable IDs in weekly research records so sources can b
 - **Read** — reviewed; findings may or may not be relevant.
 - **Used** — cited in a synthesis, decision, or project deliverable.
 
-Keep the source's citation here. Put week-specific findings and limitations in the linked dated research record.
+Keep the source's citation here. Put week-specific findings and limitations in the linked dated `research.md` record.
