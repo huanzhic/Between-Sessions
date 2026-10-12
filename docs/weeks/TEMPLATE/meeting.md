@@ -6,21 +6,41 @@
 - Attendees:
 - Location:
 
-### Questions and issues to resolve
+## Questions and issues to resolve
 
-List the questions the team agreed to ask before the meeting and the issues it hopes to resolve. See [`planning.md`](planning.md) for weekly preparation and [`research.md`](research.md) for supporting findings.
+Before the meeting, list the questions the team agreed to ask and the issues it hopes to resolve. Add context so the discussion is easy to follow later.
 
-- **Question / issue:**
+1. **Question or issue:**
+   - Context:
+   - What we hope to clarify or resolve:
+
+2. **Question or issue:**
+   - Context:
+   - What we hope to clarify or resolve:
 
 ## Summary
 
-- Briefly summarize the discussion.
+Summarize the main points discussed and any relevant context.
+
+- Main points discussed:
 
 ## Answers and decisions
 
-- **Question:**
-  - Answer / decision:
+Record the answer or decision for each question above. Include a short rationale when useful.
+
+1. **Question or issue:**
+   - Answer / decision:
+   - Rationale / notes:
+
+2. **Question or issue:**
+   - Answer / decision:
+   - Rationale / notes:
 
 ## Unresolved questions
 
-- **Question / issue:**
+- List questions or issues that remain open, with an owner and next step if known.
+
+1. **Open question / issue:**
+   - Owner:
+   - Next step:
+   - Due date:
