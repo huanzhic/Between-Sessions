@@ -2,18 +2,39 @@
 
 > Use the Monday date in the filename, for example `2026-10-12.md`.
 
-## Main goal
+## This week's goal
 
-What should the team understand, confirm, or complete by the end of this week?
+What should the team understand, confirm, or complete by the end of the week?
 
-## Research to do
+## Todo and research plan
 
-- [ ] **Question or topic:**
+- [ ] **Task / research question:**
   - Why it matters this week:
   - Owner:
   - Expected output:
-  - Research record: [YYYY-MM-DD research record](../../research/weekly/YYYY-MM-DD.md)
   - Related source IDs or GitHub issue:
+
+## Research record
+
+### Sources reviewed
+
+Register each source once in the [source index](../../research/sources/source-index.md), then cite its stable ID here.
+
+- **[S001](../../research/sources/source-index.md#s001) — Source title**
+  - Relevant finding:
+  - Limitation / caution:
+
+### What the evidence supports
+
+- 
+
+### What remains uncertain
+
+- 
+
+### Team interpretation or assumptions to validate
+
+- 
 
 ## Thursday meeting preparation
 
@@ -23,16 +44,20 @@ What should the team understand, confirm, or complete by the end of this week?
    - Context / evidence:
    - What we need clarified:
 
-### What the team needs to discuss or resolve
+### What we need to discuss or resolve
 
 - [ ] **Decision or discussion:**
   - Background:
-  - Desired meeting outcome:
-  - Decision owner / chair:
+  - Desired outcome:
+  - Decision chair / owner:
 
-## After the meeting
+## Meeting record
 
-### Confirmed
+- Date / meeting type:
+- Attendees (only if appropriate to record):
+- Summary:
+
+### Confirmed decisions
 
 - 
 
@@ -46,9 +71,12 @@ What should the team understand, confirm, or complete by the end of this week?
 
 - [ ] Action — owner — due date — [GitHub issue](ISSUE_URL)
 
+## Carryover to next week
+
+- 
+
 ## Links
 
-- Research record:
-- Meeting notes:
-- Relevant sources:
+- Relevant weekly source IDs:
+- Stakeholder or team materials approved for this repository:
 - Related GitHub issues:
