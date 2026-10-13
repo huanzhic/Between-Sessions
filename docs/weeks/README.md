@@ -1,6 +1,6 @@
 # Weekly Records
 
-Keep one folder per week under `docs/weeks/`. Name it with that week's Monday date in `YYYY-MM-DD` format, for example `2026-10-12/`.
+Keep one folder per week under `docs/weeks/`. Name it with that week's Thursday date in `YYYY-MM-DD` format, for example `2026-10-15/`.
 
 Each week folder contains three records:
 

@@ -1,6 +1,6 @@
 # Weekly Plan — YYYY-MM-DD
 
-> Name the containing folder with the Monday date for this week, for example `2026-10-12/`.
+> Name the containing folder with the Thursday date for this week, for example `2026-10-15/`.
 
 ## Goal for this week
 

@@ -11,7 +11,7 @@ docs/
 ├── project/                              # Project framing, scope, requirements, open questions
 ├── weeks/
 │   ├── README.md                         # Weekly record workflow and naming convention
-│   └── YYYY-MM-DD/                       # One folder per week, named with that week's Monday
+│   └── YYYY-MM-DD/                       # One folder per week, named with that week's Thursday
 │       ├── planning.md                   # Weekly goals, tasks, owners, and meeting preparation
 │       ├── research.md                   # Research process, findings, and limitations
 │       └── meeting.md                     # Meeting notes, decisions, and follow-up actions
@@ -28,12 +28,12 @@ docs/
 ### Directory purposes
 
 - **`docs/project/`** — Keep the current problem framing, project goals, scope, and questions that need confirmation.
-- **`docs/weeks/YYYY-MM-DD/`** — Keep one folder per week, named with that week's Monday date. Store separate `planning.md`, `research.md`, and `meeting.md` records together so the week's preparation, research, and decisions are easy to follow.
+- **`docs/weeks/YYYY-MM-DD/`** — Keep one folder per week, named with that week's Thursday date. Store separate `planning.md`, `research.md`, and `meeting.md` records together so the week's preparation, research, and decisions are easy to follow.
 - **`docs/research/sources/`** — Keep a reusable source catalog. Give each source one stable ID and refer to it from weekly records instead of duplicating its citation.
 
 ## Weekly workflow
 
-1. Copy the templates in `docs/weeks/TEMPLATE/` to a new folder such as `docs/weeks/2026-10-12/`, using that week's Monday date.
+1. Copy the templates in `docs/weeks/TEMPLATE/` to a new folder such as `docs/weeks/2026-10-15/`, using that week's Thursday date.
 2. At the start of the week, complete `planning.md` with goals, todo items, research questions, owners, expected outputs, and Thursday meeting preparation.
 3. During research, register each source once in `docs/research/sources/source-index.md`; cite its stable ID in `research.md` and summarize findings and limitations there.
 4. After Thursday's meeting, record outcomes, decisions, unresolved questions, owners, and follow-up actions in `meeting.md`.
