@@ -1,37 +1,29 @@
 # Weekly Plan — 2026-10-15
 
-> Name the containing folder with the Thursday date for this week, for example `2026-10-15/`.
-
 ## Goal for this week
-
-- What should the team understand, confirm, or complete by the end of the week?
 
 ## Tasks
 
-- [ ] **Task:** — **Owner:** — **Due date:**
+- [ ] **Task:** Research HIPAA compliance requirements for software applications, specifically mental health apps, and report findings. — **Owner:** Jack, Huang, Stanley — **Due date:**
+- [ ] **Task:** Explore Replit and the prototype shared by Justin. — **Owner:** Jack, Huang, Stanley — **Due date:**
+- [ ] **Task:** Discuss and decide on the preferred technology stack. — **Owner:** Jack, Huang, Stanley — **Due date:**
+- [ ] **Task:** Create and share a spreadsheet or CSV tracking names and weekly tasks. — **Owner:** Huang — **Due date:**
+- [ ] **Task:** Provide Replit account access to Jack, Huang, and Stanley. — **Owner:** Justin — **Due date:**
+- [ ] **Task:** Notify Cass that standing meetings are Thursdays at 6 PM. — **Owner:** Justin — **Due date:**
+- [ ] **Task:** Attend the next meeting. — **Owner:** Jack, Huang, Stanley — **Due date:** October 15, 2026, 6 PM.
 
 ## Research questions
-
-1. **Question:**
-   - Related task (if any):
 
 ## Thursday meeting preparation
 
 ### Questions for instructors or university staff
 
-1. **Question:**
-   - Context (optional):
-
 ### Topics or decisions to resolve
-
-- [ ] **Topic / decision:**
 
 ## Links
 
 - Research record: [`research.md`](research.md)
 - Meeting record: [`meeting.md`](meeting.md)
-- Related GitHub issues or approved materials:
+- Previous meeting: [`../2026-10-11/meeting.md`](../2026-10-11/meeting.md)
 
 ## Carryover
-
-- Add notes here.

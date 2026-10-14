@@ -2,17 +2,14 @@
 
 ## Research questions
 
-List the questions the team is researching this week. These can match the questions in [`planning.md`](planning.md).
-
-1. Add a research question.
+1. What HIPAA compliance requirements apply to software applications, specifically mental health apps?
+   - Assigned to: Jack, Huang, Stanley.
+2. How does the Replit platform work, and what functionality does the prototype shared by Justin provide?
+   - Assigned to: Jack, Huang, Stanley.
+3. Which technology stack should the team use for the project, including the React and FastAPI options discussed in the meeting?
+   - Assigned to: Jack, Huang, Stanley.
 
 ## Sources found
-
-Add sources in any format that is useful for the team's weekly draft. For each source, note which research question it relates to and why it may be useful.
-
-- **Source:**
-  - Related research question:
-  - Why this source:
 
 ## Links
 

@@ -2,45 +2,30 @@
 
 ## Meeting details
 
-- Date / time:
+- Date / time: October 11, 2026, 10:57–11:27.
 - Attendees:
-- Location:
+- Location: Justin Jacques's Personal Meeting Room.
 
 ## Questions and issues to resolve
 
-Before the meeting, list the questions the team agreed to ask and the issues it hopes to resolve. Add context so the discussion is easy to follow later.
-
-1. **Question or issue:**
-   - Context:
-   - What we hope to clarify or resolve:
-
-2. **Question or issue:**
-   - Context:
-   - What we hope to clarify or resolve:
-
 ## Summary
 
-Summarize the main points discussed and any relevant context.
-
-- Main points discussed:
+- Justin introduced Between Sessions as an AI-powered tool for clients to use between therapy sessions, including when therapists are unavailable. He identified HIPAA-compliant data handling and ease of use as project goals.
+- The demonstrated prototype included check-ins, journaling, and open chat. Homework support and therapist customization were discussed.
+- Saul emphasized therapeutic alliance, therapist style, and limitations of LLMs in therapy settings.
+- The team discussed an 11-week project timeframe and a basic version for pilot testing. Justin mentioned colleagues who could help with a future pilot.
+- Replit, GitHub, React, and FastAPI were discussed as development tools or technology options.
 
 ## Answers and decisions
 
-Record the answer or decision for each question above. Include a short rationale when useful.
-
-1. **Question or issue:**
-   - Answer / decision:
-   - Rationale / notes:
-
-2. **Question or issue:**
-   - Answer / decision:
-   - Rationale / notes:
+- The project is Between Sessions.
+- Standing meetings will be Thursdays at 6 PM. The next meeting is October 15, 2026.
+- Huang will create and share a spreadsheet or CSV tracking names and weekly tasks.
+- Justin will provide Replit account access to Jack, Huang, and Stanley and notify Cass of the standing meeting time.
+- Jack, Huang, and Stanley will research HIPAA requirements for mental health software, explore Replit and the prototype, and discuss the preferred technology stack.
 
 ## Unresolved questions
 
-- List questions or issues that remain open, with an owner and next step if known.
+## Links
 
-1. **Open question / issue:**
-   - Owner:
-   - Next step:
-   - Due date:
+- Weekly plan: [`../2026-10-15/planning.md`](../2026-10-15/planning.md)
