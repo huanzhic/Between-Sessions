@@ -20,6 +20,7 @@ docs/
 │       ├── research.md
 │       └── meeting.md
 └── research/
+    ├── cbt-llm-background.md              # CBT and LLM background research for team discussion
     └── sources/
         ├── README.md                     # Source catalog instructions
         └── source-index.md               # Central index of sources reviewed or queued
@@ -30,6 +31,10 @@ docs/
 - **`docs/project/`** — Keep the current problem framing, project goals, scope, and questions that need confirmation.
 - **`docs/weeks/YYYY-MM-DD/`** — Keep one folder per week, named with that week's Thursday date. Store separate `planning.md`, `research.md`, and `meeting.md` records together so the week's preparation, research, and decisions are easy to follow.
 - **`docs/research/sources/`** — Keep a reusable source catalog. Give each source one stable ID and refer to it from weekly records instead of duplicating its citation.
+
+### Background reading
+
+- [CBT and LLM Background Research](docs/research/cbt-llm-background.md) — Prepared by Zhicheng Huang. Introduces CBT concepts, implementation options, selected studies, and a possible initial investigation for team discussion. It does not represent agreed project requirements.
 
 ## Weekly workflow
 
