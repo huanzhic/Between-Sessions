@@ -1,5 +1,7 @@
 # Weekly Meeting — YYYY-MM-DD
 
+> Follow-up tasks from this meeting belong in this same dated folder's `planning.md` and the matching Google Drive tab. They cover work after this meeting; do not file them under the next meeting date. See [weekly rules](../README.md).
+
 ## Meeting details
 
 - Date / time:

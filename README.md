@@ -39,10 +39,11 @@ docs/
 ## Weekly workflow
 
 1. Copy the templates in `docs/weeks/TEMPLATE/` to a new folder such as `docs/weeks/2026-10-15/`, using that week's Thursday date.
-2. At the start of the week, complete `planning.md` with goals, todo items, research questions, owners, expected outputs, and Thursday meeting preparation.
-3. During research, register each source once in `docs/research/sources/source-index.md`; cite its stable ID in `research.md` and summarize findings and limitations there.
-4. After Thursday's meeting, record outcomes, decisions, unresolved questions, owners, and follow-up actions in `meeting.md`.
-5. Link the three weekly records to one another and include relevant GitHub issues or approved meeting materials.
+2. Use the dated meeting as the start of its work period: tasks assigned on October 11 belong in `2026-10-11/`; tasks assigned on October 15 belong in `2026-10-15/`; tasks assigned on October 22 belong in `2026-10-22/`. The same rule applies to Google Drive task tabs. Deadlines and the next meeting date do not change task ownership. See [weekly attribution rules](docs/weeks/README.md).
+3. Complete `planning.md` with the dated meeting's follow-up tasks, goals, research questions, owners, expected outputs, and preparation for the next meeting. Link unfinished earlier tasks under Carryover with their original meeting date rather than treating them as new assignments.
+4. During research, register each source once in `docs/research/sources/source-index.md`; cite its stable ID in `research.md` and summarize findings and limitations there.
+5. Record the dated meeting's outcomes, decisions, unresolved questions, owners, and follow-up actions in `meeting.md` in the same folder as its plan.
+6. Link the three weekly records to one another and include relevant GitHub issues or approved meeting materials.
 
 ## Information handling
 

@@ -1,21 +1,13 @@
 # Weekly Plan — 2026-10-15
 
+> This plan covers work assigned at the October 15 meeting for the period afterward, regardless of deadline. Earlier assignments remain in their original meeting records. See [weekly rules](../README.md).
+
 ## Goal for this week
 
 - Clarify the first prototype's scope, review the existing prototype, and identify privacy and crisis-handling questions that affect implementation.
 - After the meeting: begin simple decision-tree development and gather patient feedback before settling personalization and feature requirements.
 
-## Tasks
-
-- [ ] **Task:** Research HIPAA compliance requirements for software applications, specifically mental health apps, and report findings. — **Owner:** Jack, Huang, Stanley — **Due date:**
-- [ ] **Task:** Explore Replit and the prototype shared by Justin. — **Owner:** Jack, Huang, Stanley — **Due date:**
-- [ ] **Task:** Discuss and decide on the preferred technology stack. — **Owner:** Jack, Huang, Stanley — **Due date:**
-- [ ] **Task:** Create and share a spreadsheet or CSV tracking names and weekly tasks. — **Owner:** Huang — **Due date:**
-- [ ] **Task:** Provide Replit account access to Jack, Huang, and Stanley. — **Owner:** Justin — **Due date:**
-- [ ] **Task:** Notify Cass that standing meetings are Thursdays at 6 PM. — **Owner:** Justin — **Due date:**
-- Meeting attendance is documented in [`meeting.md`](meeting.md); the supplied summary does not confirm attendance under every name used in the earlier task list.
-
-### Follow-up tasks from the October 15 meeting
+## Tasks assigned at the October 15 meeting
 
 - [ ] **Task:** Research crisis handling and conversation storage/privacy in Woebot and the app named "Yooper" in the source (likely Youper; confirm). — **Owner:** Almutairi — **Due date:** Not specified.
 - [ ] **Task:** Start a simple decision-tree prototype and add features incrementally. — **Owner:** Almutairi — **Due date:** Not specified.
@@ -33,7 +25,7 @@ The latest summary uses "Almutairi"; earlier tasks use "Jack". Confirm the name 
 - Which patient needs require therapist personalization, and which can a simple structured prototype address?
 - What are the cost and privacy tradeoffs of the model options? See [`research.md`](research.md) for the research queue.
 
-## Thursday meeting preparation
+## Next meeting preparation
 
 ### Questions for instructors or university staff
 
@@ -51,5 +43,5 @@ The latest summary uses "Almutairi"; earlier tasks use "Jack". Confirm the name 
 
 ## Carryover
 
-- Earlier HIPAA research, prototype exploration, stack selection, task-tracking spreadsheet, Replit access, and meeting-time notification remain open unless completion is confirmed. The latest summary does not report their completion.
+- October 11 assignments: see [the original task list](../2026-10-11/planning.md#tasks). Completion of HIPAA research, prototype exploration, stack selection, task tracking, Replit access, and meeting-time notification was not reported in the latest summary. These remain attributed to October 11.
 - Therapist-style training, automatic session capture, platform integrations, and real-time monitoring remain exploratory ideas without implementation assignments.

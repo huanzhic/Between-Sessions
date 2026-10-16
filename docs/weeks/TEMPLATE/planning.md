@@ -1,6 +1,6 @@
 # Weekly Plan — YYYY-MM-DD
 
-> Name the containing folder with the Thursday date for this week, for example `2026-10-15/`.
+> Use the assigning meeting's date, normally Thursday. This plan covers work after that meeting. For example, tasks assigned on October 15 go in `2026-10-15/`, even if due October 22. Apply the same convention to Google Drive task tabs. See [weekly rules](../README.md).
 
 ## Goal for this week
 
@@ -15,7 +15,7 @@
 1. **Question:**
    - Related task (if any):
 
-## Thursday meeting preparation
+## Next meeting preparation
 
 ### Questions for instructors or university staff
 
@@ -34,4 +34,4 @@
 
 ## Carryover
 
-- Add notes here.
+- Link unfinished tasks from earlier meeting records; include the original assigning date and confirmed status. Do not duplicate them as new assignments.

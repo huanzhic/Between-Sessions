@@ -28,4 +28,4 @@
 
 ## Links
 
-- Weekly plan: [`../2026-10-15/planning.md`](../2026-10-15/planning.md)
+- Follow-up plan for this meeting: [`planning.md`](planning.md)
