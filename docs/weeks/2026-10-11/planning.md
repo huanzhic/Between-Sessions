@@ -8,7 +8,7 @@
 
 ## Tasks
 
-- [ ] **Task:** — **Owner:** — **Due date:**
+- [ ] **Task:** Research CBT as a proposed theoretical foundation, map relevant between-session practices to candidate features, and confirm the framework and boundaries with Justin. — **Owner:** TBD — **Due date:**
 
 ## Research questions
 
