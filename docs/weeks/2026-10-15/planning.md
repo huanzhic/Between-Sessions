@@ -4,7 +4,7 @@
 
 ## Goal for this week
 
-- Clarify the first prototype's scope, review the existing prototype, and identify privacy and crisis-handling questions that affect implementation.
+- Clarify the first prototype's scope and identify privacy and crisis-handling questions that affect implementation.
 - After the meeting: begin simple decision-tree development and gather patient feedback before settling personalization and feature requirements.
 
 ## Tasks assigned at the October 15 meeting
@@ -13,7 +13,8 @@
 - [ ] **Task:** Start a simple decision-tree prototype and add features incrementally. — **Owner:** Almutairi — **Due date:** Not specified.
 - [ ] **Task:** Research DeepSeek as a possible cost-effective model. — **Owner:** Huang — **Due date:** Not specified.
 - [ ] **Task:** Test token usage and costs for roughly 15-minute and one-hour interactions. — **Owner:** Huang — **Due date:** Closer to a pilot.
-- [ ] **Task:** Ask patients which between-session features would help and whether the bot should look or sound like their therapist. — **Owner:** Justin — **Due date:** This week, as stated in the meeting summary.
+- [ ] **Task:** Ask patients which between-session features would help. — **Owner:** Justin — **Due date:** This week, as stated in the meeting summary.
+- [ ] **Task:** Ask patients whether the bot should look or sound like their therapist. — **Owner:** Justin — **Due date:** This week, as stated in the meeting summary.
 - [ ] **Task:** Research crisis-related legal/liability requirements and disclosures. — **Owner:** Justin — **Due date:** Not specified.
 - [ ] **Task:** Provide Claude or ChatGPT API access when the team is ready. — **Owner:** Justin — **Due date:** When needed.
 
@@ -21,9 +22,10 @@ The latest summary uses "Almutairi"; earlier tasks use "Jack". Confirm the name 
 
 ## Research questions
 
-- How do comparable apps handle crisis responses, consent, data retention, and clinician access?
-- Which patient needs require therapist personalization, and which can a simple structured prototype address?
-- What are the cost and privacy tradeoffs of the model options? See [`research.md`](research.md) for the research queue.
+1. How do mental health chatbots recognize and respond to crisis situations, and what are their limitations?
+2. How should conversation history and summaries be handled to support continuity while protecting client privacy?
+3. How does therapist personalization affect client trust and expectations?
+4. What are the strengths and limitations of decision trees, LLMs, and hybrid approaches for this tool?
 
 ## Next meeting preparation
 
@@ -31,7 +33,7 @@ The latest summary uses "Almutairi"; earlier tasks use "Jack". Confirm the name 
 
 ### Topics or decisions to resolve
 
-- First prototype features and the role of CBT.
+- First prototype features, informed by [the previous cycle's CBT background research](../2026-10-11/research.md#background-research-cbt-and-llms).
 - Crisis-response boundaries, disclosures, consent, and any clinician notification workflow.
 - Conversation retention and access; model and technology stack selection.
 
@@ -43,5 +45,5 @@ The latest summary uses "Almutairi"; earlier tasks use "Jack". Confirm the name 
 
 ## Carryover
 
-- October 11 assignments: see [the original task list](../2026-10-11/planning.md#tasks). Completion of HIPAA research, prototype exploration, stack selection, task tracking, Replit access, and meeting-time notification was not reported in the latest summary. These remain attributed to October 11.
+- October 11 assignments: see [the original task list](../2026-10-11/planning.md#tasks). Task tracking and Replit access are marked Done in Google Drive; Huang confirmed completion of the CBT background research. HIPAA research, prototype exploration, stack selection, and meeting-time notification have no confirmed completion. These remain attributed to October 11.
 - Therapist-style training, automatic session capture, platform integrations, and real-time monitoring remain exploratory ideas without implementation assignments.

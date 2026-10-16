@@ -39,7 +39,8 @@
 | Almutairi | Start a simple decision-tree prototype and add features incrementally. | Not specified |
 | Huang | Research DeepSeek as a model option, including cost. | Not specified |
 | Huang | Test token usage and costs for interactions of about 15 minutes versus one hour. | Closer to a pilot |
-| Justin | Ask patients about desired between-session features and the importance of therapist appearance or voice. | This week, as stated in the summary |
+| Justin | Ask patients about desired between-session features. | This week, as stated in the summary |
+| Justin | Ask patients about the importance of therapist appearance or voice. | This week, as stated in the summary |
 | Justin | Research crisis-related legal/liability requirements and disclosure statements. | Not specified |
 | Justin | Provide Claude or ChatGPT API access when the team is ready. | When needed |
 

@@ -13,13 +13,13 @@
 - [ ] **Task:** Research HIPAA compliance requirements for software applications, specifically mental health apps, and report findings. — **Owner:** Jack, Huang, Stanley — **Due date:**
 - [ ] **Task:** Explore Replit and the prototype shared by Justin. — **Owner:** Jack, Huang, Stanley — **Due date:**
 - [ ] **Task:** Discuss and decide on the preferred technology stack. — **Owner:** Jack, Huang, Stanley — **Due date:**
-- [ ] **Task:** Create and share a spreadsheet or CSV tracking names and weekly tasks. — **Owner:** Huang — **Due date:**
-- [ ] **Task:** Provide Replit account access to Jack, Huang, and Stanley. — **Owner:** Justin — **Due date:**
+- [x] **Task:** Create and share a spreadsheet or CSV tracking names and weekly tasks. — **Owner:** Huang — **Due date:** — **Status source:** Google Drive task tracker.
+- [x] **Task:** Provide Replit account access to Jack, Huang, and Stanley. — **Owner:** Justin — **Due date:** — **Status source:** Google Drive task tracker.
 - [ ] **Task:** Notify Cass that standing meetings are Thursdays at 6 PM. — **Owner:** Justin — **Due date:**
 
-### Proposed research task
+### Completed background research
 
-- [ ] **Task:** Research CBT as a proposed theoretical foundation, map relevant between-session practices to candidate features, and confirm the framework and boundaries with Justin. — **Owner:** TBD — **Due date:**
+- [x] **Task:** Prepare CBT and LLM background research. — **Owner:** Zhicheng Huang — **Output:** [Research summary](research.md#background-research-cbt-and-llms). — **Status:** Completed, as confirmed by Huang; the project's therapeutic framework remains open for discussion.
 
 ## Research questions
 

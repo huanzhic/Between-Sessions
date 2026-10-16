@@ -11,3 +11,9 @@ Attribute tasks by the meeting that assigned them, not by their deadline or the 
 Keep `meeting.md`, `planning.md`, and `research.md` together under the assigning meeting's date. Preserve original task ownership when work remains unfinished; later weeks may link to it in Carryover with the original meeting date and confirmed status. Do not silently duplicate an earlier assignment as a new current-week task or infer completion.
 
 Read `docs/weeks/README.md` before updating weekly records or the Google Drive task tracker.
+
+# Research questions
+
+Huang's CBT and LLM background research belongs to the October 11 research cycle, as confirmed by the user. Do not list it as new October 15 research merely because its document is dated October 15. Preserve the document date separately from weekly attribution.
+
+Research questions must identify substantive knowledge gaps, not simply restate tasks such as exploring a platform, obtaining API access, or choosing a stack. Use a short numbered list of plain questions, following the user's preference; do not expand each question into scope, evidence, or output sections unless requested. Keep action assignments and owners in the plan; distinguish proposed investigations from verified findings.

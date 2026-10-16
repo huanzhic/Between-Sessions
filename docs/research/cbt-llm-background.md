@@ -4,6 +4,8 @@
 
 **Date:** October 15, 2026
 
+**Research cycle:** [October 11, 2026](../weeks/2026-10-11/research.md); the document date does not determine weekly attribution.
+
 **Status:** Background research for team discussion
 
 ## 1. Purpose and Scope

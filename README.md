@@ -11,7 +11,7 @@ docs/
 ├── project/                              # Project framing, scope, requirements, open questions
 ├── weeks/
 │   ├── README.md                         # Weekly record workflow and naming convention
-│   └── YYYY-MM-DD/                       # One folder per week, named with that week's Thursday
+│   └── YYYY-MM-DD/                       # Meeting date; work period starts after that meeting
 │       ├── planning.md                   # Weekly goals, tasks, owners, and meeting preparation
 │       ├── research.md                   # Research process, findings, and limitations
 │       └── meeting.md                     # Meeting notes, decisions, and follow-up actions
@@ -29,7 +29,7 @@ docs/
 ### Directory purposes
 
 - **`docs/project/`** — Keep the current problem framing, project goals, scope, and questions that need confirmation.
-- **`docs/weeks/YYYY-MM-DD/`** — Keep one folder per week, named with that week's Thursday date. Store separate `planning.md`, `research.md`, and `meeting.md` records together so the week's preparation, research, and decisions are easy to follow.
+- **`docs/weeks/YYYY-MM-DD/`** — Keep one folder per meeting date, normally Thursday, covering work after that meeting. Store separate `planning.md`, `research.md`, and `meeting.md` records together so the cycle's tasks, research, and decisions are easy to follow.
 - **`docs/research/sources/`** — Keep a reusable source catalog. Give each source one stable ID and refer to it from weekly records instead of duplicating its citation.
 
 ### Background reading
