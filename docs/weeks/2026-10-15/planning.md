@@ -33,6 +33,7 @@ The latest summary uses "Almutairi"; earlier tasks use "Jack". Confirm the name 
 
 ### Topics or decisions to resolve
 
+- For the October 22 evening meeting: discuss [Huang's emotion-support research](research.md#huangs-research-emotion-support-in-ai-chat), including optional exercises, conversation continuity, and therapist review and takeover. These are proposals for discussion.
 - First prototype features, informed by [the previous cycle's CBT background research](../2026-10-11/research.md#background-research-cbt-and-llms).
 - Crisis-response boundaries, disclosures, consent, and any clinician notification workflow.
 - Conversation retention and access; model and technology stack selection.
