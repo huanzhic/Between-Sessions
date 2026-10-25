@@ -7,6 +7,21 @@ We are at the project kickoff stage. Our current work is to frame the problem, r
 ## Repository structure
 
 ```text
+apps/
+├── web/                                  # React + TypeScript frontend (Vite)
+│   └── src/
+│       ├── api/                          # Client code for calling the API
+│       ├── components/                   # Shared UI components
+│       └── pages/                        # Screens
+└── api/                                  # TypeScript (Node) API, deployed on Render
+    └── src/
+        ├── auth/                         # Login (Better Auth)
+        ├── db/                           # Postgres access
+        ├── llm/                          # Claude API integration
+        └── routes/                       # HTTP endpoints
+db/
+├── migrations/                           # Postgres schema changes
+└── seeds/                                # Fictional development data only
 docs/
 ├── project/                              # Project framing, scope, requirements, open questions
 ├── weeks/
@@ -28,6 +43,8 @@ docs/
 
 ### Directory purposes
 
+- **`apps/`** — Application code, managed as npm workspaces. The stack and its BAA requirements are described in [Tech Stack Under BAA Requirements](docs/research/baa-tech-stack.md).
+- **`db/`** — Postgres migrations and fictional seed data.
 - **`docs/project/`** — Keep the current problem framing, project goals, scope, and questions that need confirmation.
 - **`docs/weeks/YYYY-MM-DD/`** — Keep one folder per meeting date, normally Thursday, covering work after that meeting. Store separate `planning.md`, `research.md`, and `meeting.md` records together so the cycle's tasks, research, and decisions are easy to follow.
 - **`docs/research/sources/`** — Keep a reusable source catalog. Give each source one stable ID and refer to it from weekly records instead of duplicating its citation.
@@ -35,6 +52,18 @@ docs/
 ### Background reading
 
 - [CBT and LLM Background Research](docs/research/cbt-llm-background.md) — Prepared by Zhicheng Huang. Introduces CBT concepts, implementation options, selected studies, and a possible initial investigation for team discussion. It does not represent agreed project requirements.
+
+## Development setup
+
+Requires Node.js 22 or later.
+
+```sh
+npm install
+cp .env.example .env
+npm run dev:web    # frontend at http://localhost:5173
+npm run dev:api    # API at http://localhost:3000/health
+npm run typecheck
+```
 
 ## Weekly workflow
 

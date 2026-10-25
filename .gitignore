@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Environment files hold secrets; commit only .env.example
+.env
+.env.*
+!.env.example
+
+.DS_Store
+*.log
