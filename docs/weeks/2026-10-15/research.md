@@ -29,10 +29,6 @@ Prepared on October 22, 2026, for that evening's meeting. This work belongs to t
 
 These are design proposals, not approved clinical requirements. First evaluate fictional conversations with professional reviewers for accuracy, patient control, and therapist usefulness. Clinical benefit and continued use need separate evaluation.
 
-## Task status update — October 25, 2026
-
-Huang's DeepSeek investigation [#7](https://github.com/huanzhic/Between-Sessions/issues/7) and token/cost testing [#8](https://github.com/huanzhic/Between-Sessions/issues/8) are closed as completed in GitHub. A separate DeepSeek findings artifact and measured token/cost results are not linked here. The task status is synchronized from GitHub; no benchmark values or findings have been inferred. Both assignments remain attributed to October 15. Attach the existing results when available so they can inform the model and budget discussion.
-
 ## Sources
 
 - S007: APA's definition of evidence-based practice.

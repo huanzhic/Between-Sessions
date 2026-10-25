@@ -26,10 +26,6 @@
 
 ## Unresolved questions
 
-## Follow-up status — October 25, 2026
-
-This update records later task status; the meeting summary above remains a record of October 11. GitHub [#1](https://github.com/huanzhic/Between-Sessions/issues/1), [#2](https://github.com/huanzhic/Between-Sessions/issues/2), and [#3](https://github.com/huanzhic/Between-Sessions/issues/3) are closed as completed for HIPAA research, prototype exploration, and stack selection. Justin's notification to Cass [#4](https://github.com/huanzhic/Between-Sessions/issues/4) remains open. Task-tracker setup, Replit access, and Huang's CBT/LLM background research remain completed; sources are retained in the [plan](planning.md).
-
 ## Links
 
 - Follow-up plan for this meeting: [`planning.md`](planning.md)

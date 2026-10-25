@@ -10,12 +10,12 @@
 
 ### Assigned at the October 11 meeting
 
-- [x] **Task:** Research HIPAA compliance requirements for software applications, specifically mental health apps, and report findings. — **Owner:** Jack, Huang, Stanley — **Due date:** — **Status source:** [GitHub #1](https://github.com/huanzhic/Between-Sessions/issues/1), closed as completed on October 25, 2026. Research completion does not establish pilot readiness or signed BAA coverage.
-- [x] **Task:** Explore Replit and the prototype shared by Justin. — **Owner:** Jack, Huang, Stanley — **Due date:** — **Status source:** [GitHub #2](https://github.com/huanzhic/Between-Sessions/issues/2), closed as completed on October 25, 2026.
-- [x] **Task:** Discuss and decide on the preferred technology stack. — **Owner:** Jack, Huang, Stanley — **Due date:** — **Status source:** [GitHub #3](https://github.com/huanzhic/Between-Sessions/issues/3), closed as completed on October 25, 2026. See [Stanley's selected stack](../../research/baa-tech-stack.md).
+- [ ] **Task:** Research HIPAA compliance requirements for software applications, specifically mental health apps, and report findings. — **Owner:** Jack, Huang, Stanley — **Due date:**
+- [ ] **Task:** Explore Replit and the prototype shared by Justin. — **Owner:** Jack, Huang, Stanley — **Due date:**
+- [ ] **Task:** Discuss and decide on the preferred technology stack. — **Owner:** Jack, Huang, Stanley — **Due date:**
 - [x] **Task:** Create and share a spreadsheet or CSV tracking names and weekly tasks. — **Owner:** Huang — **Due date:** — **Status source:** Google Drive task tracker.
 - [x] **Task:** Provide Replit account access to Jack, Huang, and Stanley. — **Owner:** Justin — **Due date:** — **Status source:** Google Drive task tracker.
-- [ ] **Task:** Notify Cass that standing meetings are Thursdays at 6 PM. — **Owner:** Justin — **Due date:** — **Status source:** [GitHub #4](https://github.com/huanzhic/Between-Sessions/issues/4), open as of October 25, 2026; completion remains unconfirmed.
+- [ ] **Task:** Notify Cass that standing meetings are Thursdays at 6 PM. — **Owner:** Justin — **Due date:**
 
 ### Completed background research
 
