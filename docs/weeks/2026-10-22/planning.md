@@ -37,7 +37,7 @@
 ### Topics or decisions to resolve
 
 - [ ] Review Almutairi's animated patient-side storyboard or prototype.
-- [ ] Review Stanley's BAA findings and decide whether they narrow model options.
+- [ ] Share the [selected tech stack](../../research/baa-tech-stack.md) with the team. Stanley selected it on October 25. Decide who signs the Render and Anthropic BAAs.
 - [ ] Choose features to prioritize for the next prototype iteration.
 - [ ] Decide whether wearables or another feature will be the main differentiator.
 
@@ -50,5 +50,5 @@
 ## Carryover
 
 - October 15 assignments: see [the original task list](../2026-10-15/planning.md#tasks-assigned-at-the-october-15-meeting). At this meeting, Almutairi reported on crisis responses in Youper and Woebot, and Huang presented an AI chat prototype; completion of those tasks was not confirmed. Justin's API access offer is now a specific October 22 assignment above. These remain attributed to October 15.
-- October 11 assignments: see [the original task list](../2026-10-11/planning.md#tasks). HIPAA research was discussed again but its completion is not confirmed; Stanley's BAA research is a new, narrower October 22 assignment. Cass attended this meeting, but completion of the meeting-time notification is not confirmed. These remain attributed to October 11.
+- October 11 assignments: see [the original task list](../2026-10-11/planning.md#tasks). HIPAA research was discussed again but its completion is not confirmed; Stanley's BAA research is a new, narrower October 22 assignment. Cass attended this meeting, but completion of the meeting-time notification is not confirmed. On October 25, Stanley selected a [tech stack](../../research/baa-tech-stack.md). The October 11 stack task was shared with Jack and Huang, so it stays open until the team confirms. These remain attributed to October 11.
 - Therapist interaction features are deferred because of legal and liability concerns; text-to-speech, two-way communication, and Apple Watch integration remain ideas without implementation assignments.
