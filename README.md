@@ -2,7 +2,9 @@
 
 ## Project stage
 
-We are at the project kickoff stage. Our current work is to frame the problem, review relevant research, and discuss the project with instructors and university stakeholders. Project requirements, research questions, and technical choices are still being refined. This project does not claim clinical effectiveness.
+We are in planning and early prototyping. A React/TypeScript frontend and Node API scaffold are in place, with the stack selection recorded in [Stanley's research](docs/research/baa-tech-stack.md). The web currently shows a title and the API exposes `/health`; authentication, database integration, and LLM features are not implemented. Product scope, mobile delivery, and pilot preparation remain to be resolved. This project does not claim clinical effectiveness.
+
+See [current task status and proposed next steps](docs/project/status.md), synchronized with GitHub on October 25, 2026.
 
 ## Repository structure
 

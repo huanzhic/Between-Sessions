@@ -46,6 +46,10 @@
 
 The source uses "Almutairi" while earlier records use "Jack"; the identity mapping is not confirmed here. See the planning record for earlier tasks whose completion was not reported.
 
+## Follow-up status — October 25, 2026
+
+Huang's DeepSeek research [#7](https://github.com/huanzhic/Between-Sessions/issues/7) and token/cost testing [#8](https://github.com/huanzhic/Between-Sessions/issues/8) are closed as completed in GitHub; their separate results are not linked in the research record. The other October 15 assignments remain open. Justin's API-access offer #12 is partly superseded by the specific October 22 key-delivery task #18. See the [plan](planning.md) for current status; the meeting-time statements above describe the original assignments.
+
 ## Unresolved questions
 
 - Which patient needs and features should define the first prototype? How much therapist personalization is necessary?

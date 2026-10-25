@@ -4,7 +4,7 @@
 
 **Date:** October 25, 2026
 
-**Research cycle:** [October 22, 2026](../weeks/2026-10-22/research.md). This supports Stanley's October 22 BAA task and the open [October 11 stack decision](../weeks/2026-10-11/planning.md#tasks).
+**Research cycle:** [October 22, 2026](../weeks/2026-10-22/research.md). This supports Stanley's October 22 BAA task and the [October 11 stack decision](../weeks/2026-10-11/planning.md#tasks). Both assignments are closed as completed in GitHub [#19](https://github.com/huanzhic/Between-Sessions/issues/19) and [#3](https://github.com/huanzhic/Between-Sessions/issues/3) as of October 25, 2026; signing agreements and preparing a pilot remain separate work.
 
 **Status:** Selected on October 25, 2026, at Stanley Eng's direction; the stack in section 2 is the project's chosen stack. Alternatives are kept for reference. This is not legal advice. Signed agreements and counsel control what is actually covered.
 
@@ -54,7 +54,7 @@ Sending login emails, such as verification messages or magic links, would expose
 
 ## 5. LLM
 
-Use the Claude API with HIPAA readiness (S011), with Claude Opus 5.5 as the default. The final model and cost decision depends on Huang's token-cost testing.
+Use the Claude API with HIPAA readiness (S011), with Claude Opus 5.5 as the default recorded in this research. Huang's original token-cost testing assignment [#8](https://github.com/huanzhic/Between-Sessions/issues/8) is closed as completed on October 25, 2026, but its measured results are not linked in the weekly research record. Archive the tested model, token counts, and cost results before using that work to settle the final model and budget.
 
 - **Eligible features:** the Messages API, streaming, prompt caching, structured outputs, thinking, and token counting.
 - **Blocked features:** the Files API, batch processing, Managed Agents, code execution, the MCP connector, context editing, and server-side compaction.

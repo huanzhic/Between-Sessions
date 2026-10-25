@@ -20,9 +20,11 @@ These are statements from the October 22 meeting, not verified findings.
 - Youper and Woebot suggest crisis hotlines and had problems with AI responses (Almutairi).
 - Wearables reflect current trends in AI medicine (Dr. Dykeman).
 
-## Stanley's research: BAA options and proposed stack
+## Stanley's research: BAA options and selected stack
 
 Prepared October 25, 2026, for research questions 1 and 2. Full write-up: [Tech Stack Under BAA Requirements](../../research/baa-tech-stack.md).
+
+**Task status:** [GitHub #19](https://github.com/huanzhic/Between-Sessions/issues/19) is closed as completed on October 25, 2026. The stack-selection assignment [#3](https://github.com/huanzhic/Between-Sessions/issues/3) is also closed and remains attributed to October 11. Task closure does not resolve the source limitations below or confirm that agreements have been signed.
 
 On October 25, 2026, Stanley selected this stack:
 

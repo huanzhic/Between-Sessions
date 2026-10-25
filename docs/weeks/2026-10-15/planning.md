@@ -11,14 +11,16 @@
 
 - [ ] **Task:** Research crisis handling and conversation storage/privacy in Woebot and the app named "Yooper" in the source (likely Youper; confirm). — **Owner:** Almutairi — **Due date:** Not specified.
 - [ ] **Task:** Start a simple decision-tree prototype and add features incrementally. — **Owner:** Almutairi — **Due date:** Not specified.
-- [ ] **Task:** Research DeepSeek as a possible cost-effective model. — **Owner:** Huang — **Due date:** Not specified.
-- [ ] **Task:** Test token usage and costs for roughly 15-minute and one-hour interactions. — **Owner:** Huang — **Due date:** Closer to a pilot.
+- [x] **Task:** Research DeepSeek as a possible cost-effective model. — **Owner:** Huang — **Due date:** Not specified. — **Status source:** [GitHub #7](https://github.com/huanzhic/Between-Sessions/issues/7), closed as completed on October 25, 2026. A separate findings artifact is not linked in the research record.
+- [x] **Task:** Test token usage and costs for roughly 15-minute and one-hour interactions. — **Owner:** Huang — **Due date:** Closer to a pilot. — **Status source:** [GitHub #8](https://github.com/huanzhic/Between-Sessions/issues/8), closed as completed on October 25, 2026. Measured token counts, tested model, and costs are not linked in the research record.
 - [ ] **Task:** Ask patients which between-session features would help. — **Owner:** Justin — **Due date:** This week, as stated in the meeting summary.
 - [ ] **Task:** Ask patients whether the bot should look or sound like their therapist. — **Owner:** Justin — **Due date:** This week, as stated in the meeting summary.
 - [ ] **Task:** Research crisis-related legal/liability requirements and disclosures. — **Owner:** Justin — **Due date:** Not specified.
 - [ ] **Task:** Provide Claude or ChatGPT API access when the team is ready. — **Owner:** Justin — **Due date:** When needed.
 
 The latest summary uses "Almutairi"; earlier tasks use "Jack". Confirm the name mapping before consolidating assignments.
+
+Status checked October 25, 2026: the remaining assignments are open in GitHub [#5](https://github.com/huanzhic/Between-Sessions/issues/5), [#6](https://github.com/huanzhic/Between-Sessions/issues/6), and [#9–#12](https://github.com/huanzhic/Between-Sessions/issues?q=is%3Aissue%20is%3Aopen). Almutairi reported initial crisis-response findings on October 22; completion is not confirmed. Justin's API-access offer remains open and is partly superseded by the specific October 22 key-delivery task [#18](https://github.com/huanzhic/Between-Sessions/issues/18).
 
 ## Research questions
 
@@ -46,5 +48,5 @@ The latest summary uses "Almutairi"; earlier tasks use "Jack". Confirm the name 
 
 ## Carryover
 
-- October 11 assignments: see [the original task list](../2026-10-11/planning.md#tasks). Task tracking and Replit access are marked Done in Google Drive; Huang confirmed completion of the CBT background research. HIPAA research, prototype exploration, stack selection, and meeting-time notification have no confirmed completion. These remain attributed to October 11.
+- October 11 assignments: see [the original task list](../2026-10-11/planning.md#tasks). As of October 25, HIPAA research, prototype exploration, and stack selection are closed as completed in GitHub #1–#3. Task tracking and Replit access are marked Done in Google Drive; Huang confirmed completion of the CBT background research. Justin's meeting-time notification remains open (#4). These remain attributed to October 11.
 - Therapist-style training, automatic session capture, platform integrations, and real-time monitoring remain exploratory ideas without implementation assignments.

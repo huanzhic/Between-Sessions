@@ -46,6 +46,10 @@
 | Justin | Provide an API key (OpenRouter preferred) to Huang and Dykeman on email request. | On request |
 | Stanley | Research which LLM models or enterprise versions offer a BAA for HIPAA compliance. | Not specified |
 
+## Follow-up status — October 25, 2026
+
+Huang's API-key request [#16](https://github.com/huanzhic/Between-Sessions/issues/16) and Stanley's BAA research [#19](https://github.com/huanzhic/Between-Sessions/issues/19) are closed as completed in GitHub. Justin's key delivery #18 and summary delivery #17 remain open, as do Almutairi's tasks #13–#15. The older stack-selection assignment #3 is closed; implementation ownership and mobile delivery still need agreement. See the [plan](planning.md) and [current status](../../project/status.md). These later updates do not change the original meeting decisions.
+
 ## Unresolved questions
 
 - Which model providers and plans offer a BAA, and would access through OpenRouter be covered?

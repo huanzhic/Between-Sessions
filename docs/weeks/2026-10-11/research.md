@@ -31,6 +31,10 @@ List the questions the team is researching this week. These can match the questi
 - **Limitations:** The original paper notes were based on extracted main texts; supplements and registration differences were not fully checked. Reading extent for the background webpages was not recorded. Reorganizing the material did not include a new source review. Workflow evaluation would not establish therapeutic effectiveness.
 - **Status:** Background material for team and instructor discussion. This direction is not an agreed project requirement or finalized research plan; model training and patient-facing testing have not been agreed upon.
 
+## Task status update — October 25, 2026
+
+The October 11 HIPAA research, prototype exploration, and stack-selection assignments are closed as completed in GitHub #1–#3; source links are in the [plan](planning.md). Stanley's [October 25 stack/BAA write-up](../../research/baa-tech-stack.md) belongs to the October 22 BAA research cycle and supports the older stack decision without moving its original assignment. Research-task completion does not establish that agreements have been signed or a pilot is ready.
+
 ## Links
 
 - Planning record: [`planning.md`](planning.md)
