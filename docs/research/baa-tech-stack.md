@@ -1,12 +1,10 @@
 # Tech Stack Under BAA Requirements
 
-**Prepared by:** Stanley Eng, drafted with Claude Code
+**Prepared by:** Stanley Eng
 
 **Date:** October 25, 2026
 
-**Research cycle:** [October 22, 2026](../weeks/2026-10-22/research.md). This supports Stanley's October 22 BAA task and the open [October 11 stack decision](../weeks/2026-10-11/planning.md#tasks).
-
-**Status:** Selected on October 25, 2026, at Stanley Eng's direction; the stack in section 2 is the project's chosen stack. Alternatives are kept for reference. This is not legal advice. Signed agreements and counsel control what is actually covered.
+**Research cycle:** [October 22, 2026](../weeks/2026-10-22/research.md). 
 
 ## 1. Constraints
 
