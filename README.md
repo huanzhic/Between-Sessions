@@ -53,6 +53,18 @@ docs/
 
 - [CBT and LLM Background Research](docs/research/cbt-llm-background.md) — Prepared by Zhicheng Huang. Introduces CBT concepts, implementation options, selected studies, and a possible initial investigation for team discussion. It does not represent agreed project requirements.
 
+## Proposed MVP plan
+
+Prepared November 1, 2026 for team/Justin review. These documents propose the reflection-to-letter demo and preserve unresolved conflicts with earlier meeting decisions. They do not describe implemented application features or compliance readiness.
+
+- [MVP scope and architecture](docs/project/mvp-scope-and-architecture.md)
+- [Team roles and development order](docs/project/team-roles-and-development-order.md) — teammate-shareable split and Discord message
+- [API contract draft](docs/project/api-contract-draft.md)
+- [Optional AI summary specification](docs/project/ai-summary-spec.md)
+- [Decisions and open questions](docs/project/decisions-and-open-questions.md)
+- [Repository audit and change plan](docs/project/repository-change-plan.md)
+- [Required GitHub collaboration rules and enforcement status](docs/project/github-collaboration-rules.md)
+
 ## Development setup
 
 Requires Node.js 22 or later.
