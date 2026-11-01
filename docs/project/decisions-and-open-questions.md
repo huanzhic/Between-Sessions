@@ -27,6 +27,8 @@ All decisions below are OPEN. "Approver" identifies who should agree, not someon
 | Relationship enrollment, auth/session choices, assignment edits, retention and deletion? | Server authorization mandatory; library-specific paths, lifecycle and retention not finalized | Backend A + B + Huang; Justin for user-facing boundaries |
 | Which teammate takes Backend A/B? | Names TBD; Huang owns frontend/AI feature design only | All three teammates |
 
-## Confirmed constraints for this preparation task
+## Current scope and collaboration requirements
 
-One npm monorepo, no full app implementation, fictional data only, no clinical effectiveness claim, no live emergency/monitoring feature, no commit/push/PR/deploy or paid service activation. Only remote mutation authorized is main review/branch protection. Mandatory peer-review policy is a user requirement, not an open vote; see [live configuration status](github-collaboration-rules.md). CI enforcement remains pending until the actual workflow reports successfully on GitHub.
+Keep one npm monorepo. This planning PR does not implement the full application, deploy services, activate paid plans, use patient data, claim clinical effectiveness, or connect live emergency/monitoring services. Development uses fictional data only.
+
+The user authorized publication through a feature branch and [PR #20](https://github.com/huanzhic/Between-Sessions/pull/20). Main now requires peer review and the **Typecheck and build** GitHub Actions check, with up-to-date branches. GitHub CI has passed on Node 22; see [verification evidence](github-collaboration-rules.md). Merge still requires an eligible teammate's approval, resolved conversations and passing CI on the latest revision. These collaboration requirements are mandatory, not open product decisions.

@@ -1,8 +1,14 @@
 # Repository audit and incremental change plan
 
-Publication update, November 1, 2026: the user subsequently authorized GitHub upload. The nine-file change was committed on `docs/mvp-plan-and-review-workflow`, rebased onto fetched main and pushed as [PR #20](https://github.com/huanzhic/Between-Sessions/pull/20). The first GitHub Actions Node 22 run passed. Main now requires the actual **Typecheck and build** GitHub Actions check with up-to-date branches; protection readback verified all earlier peer-review safeguards remain enabled. Overall protection is now **ENFORCED**. The preparation-phase audit below retains its original timing and authorization limits; statements about unpublished CI or no commits describe that earlier phase. No PR merge or deployment was performed.
+## Current status — November 1, 2026
 
-Audited November 1, 2026. Local main and the initially cached origin/main were `ffc3378` (revert of task-state sync); local branch `local/initial-setup` also exists. Initial working tree was clean. A final `git ls-remote` and `git fetch origin main` verified actual remote main at `b628c951392e128ed1f5585c9df9d431c72dc5f3`, one commit ahead. That commit only edits `docs/research/baa-tech-stack.md`: removes the Claude Code attribution, task-attribution sentence and explicit selected-status paragraph; selected-stack labels remain in the body. Its diff was reviewed. Application/configuration/weekly records match the local baseline. The checkout is deliberately not merged/reset; local main remains `ffc3378`, fetched origin/main is `b628c95`. No new branch, commit, push or PR is created by this task.
+The user authorized GitHub publication. The nine-file change is committed on `docs/mvp-plan-and-review-workflow`, based on main `b628c95`, and published as [PR #20](https://github.com/huanzhic/Between-Sessions/pull/20). GitHub Actions has passed on Node 22. Main requires the **Typecheck and build** GitHub Actions check with up-to-date branches, plus peer approval, stale-review dismissal, last-push approval and resolved conversations. Protection applies to admins, with no configured bypass; force pushes and deletion are blocked. Overall protection is **ENFORCED**; see [readback evidence](github-collaboration-rules.md). The PR remains unmerged. No deployment was performed.
+
+## Initial audit history — before publication
+
+The initial working tree was clean. Local main and the cached origin/main were `ffc3378`; local branch `local/initial-setup` also existed. Fetching main revealed `b628c95`, whose only change was stack-research attribution/status wording. That diff was reviewed; the feature branch was subsequently rebased onto it without changing application code or historical weekly records.
+
+At this initial inspection, the public repository had no classic main protection (404), rulesets/effective rules or Actions workflows. Those findings describe the starting state; the current enforced protection and published CI are documented above.
 
 ## Actual implementation
 
@@ -19,9 +25,7 @@ package.json   npm workspaces apps/*; root build/typecheck scripts
 package-lock.json  existing tracked lockfile
 ```
 
-No framework, router, application DB schema, authentication, AI provider SDK, workflow endpoint, test suite or CI workflow was implemented at audit. `/health` is functional; other API paths return 404. README folder labels describe intentions (Render, Better Auth, Claude), not evidence of deployed/configured services. Existing dependencies are installed locally; Node 24.21.0/npm 11.19.0 available, `gh` unavailable. Only root AGENTS.md applies. No existing PR template/CODEOWNERS or local CI policy was found.
-
-Remote inspection found a public repository with admin permission, no classic main protection (404), no rulesets/effective rules and zero Actions workflows. See [protection evidence and final status](github-collaboration-rules.md). Missing branch settings are not inferred from Markdown alone.
+No framework, router, application DB schema, authentication, AI provider SDK, workflow endpoint or test suite is implemented. `/health` is functional; other API paths return 404. README folder labels describe intentions (Render, Better Auth, Claude), not evidence of deployed/configured services. CI is added by this PR. Local validation used Node 24.21.0/npm 11.19.0; `gh` was unavailable. Only root AGENTS.md applies. No existing PR template or CODEOWNERS file was found.
 
 ## Target and ownership
 
@@ -38,13 +42,13 @@ No contracts workspace is created now: neither application consumes a contract, 
 
 ## Minimal preparation in this task
 
-Seven planning/policy documents and README links; a basic `.github/workflows/ci.yml` runs reproducible `npm ci`, root typecheck and root build on PRs and pushes to main, using Node 22. Workflow permissions are read-only; it needs no secrets, services or patient data. Proposed actual check name is **Typecheck and build**. No path filters or no-op checks. Local clean installation validates the existing lockfile; avoid unrelated dependency upgrades.
+Seven planning/policy documents and README links; a published `.github/workflows/ci.yml` runs reproducible `npm ci`, root typecheck and root build on PRs and pushes to main, using Node 22. Workflow permissions are read-only; it needs no secrets, services or patient data. The actual required check name is **Typecheck and build**. No path filters or no-op checks. Local clean installation validated the existing lockfile; no dependency upgrades were made.
 
-The workflow is local/unpublished because commits/pushes/PRs are prohibited. Required status-check enforcement is **PENDING**, not completed, until this workflow is separately authorized for publication and a successful GitHub run reports the actual check name. Do not select an imagined check or use local build success as remote evidence. Preserve any existing stricter checks when configuring future requirements.
+After observing a successful GitHub run, the check was made required on main and its configuration was read back. Future changes must preserve this requirement and existing review protections. Local build success alone does not replace a successful GitHub check on the PR's latest revision.
 
 ## Validation and handoff
 
-Run `npm ci`, `npm run typecheck`, `npm run build`, startup smoke checks for API health/404 and frontend, and `git diff --check`. Results and limitations are recorded below after execution. Future authorization/security/workflow tests belong to their feature owners; this preparation task adds no implementation-mirroring test suite. Weekly records and application source stay unchanged. No deployment or real-data testing.
+The checks below were executed during preparation and publication. Future authorization/security/workflow tests belong to their feature owners; this planning PR adds no application test suite. Weekly records and application source are unchanged. No deployment or real-data testing was performed.
 
 See [GitHub policy](github-collaboration-rules.md) for exact setup/readback evidence and expected behaviors; review protection and CI protection must be reported separately.
 
@@ -59,8 +63,9 @@ See [GitHub policy](github-collaboration-rules.md) for exact setup/readback evid
 | API startup smoke | Built server started with a temporary local port; `/health` returned 200 `{status:"ok"}`, unknown path returned 404; temporary process stopped |
 | Frontend development startup smoke | Vite started on localhost with strict port; HTML returned 200 with `/src/main.tsx` entry; temporary process stopped |
 | Documentation checks | All 31 local Markdown links across README and seven new documents resolved; tracked diff whitespace check passed |
-| GitHub settings readback | Peer-review/branch protections ENFORCED; overall PARTIALLY ENFORCED because required CI is pending |
+| GitHub Actions Node 22 | [Run 41346940442](https://github.com/huanzhic/Between-Sessions/actions/runs/41346940442) passed for publication revision `7722e14`; later revisions must pass again |
+| GitHub settings readback | Peer-review and required CI protections verified; overall ENFORCED |
 
-Local checks used Node 24.21.0, not the workflow's Node 22 Linux runner. GitHub Actions execution and remote check enforcement were **not run**: no publication is authorized. Startup checks are HTTP smoke checks, not browser accessibility or full application tests. No authentication/letter/AI/SOS implementation exists to exercise end-to-end. Settings were inspected, not tested by pushing or merging.
+Local checks used Node 24.21.0; the published GitHub Actions workflow also passed on its Node 22 Linux runner. Startup checks are HTTP smoke checks, not browser accessibility or full application tests. No authentication/letter/AI/SOS implementation exists to exercise end-to-end. Protection settings were inspected; rejection behavior was not tested through direct pushes or attempted merges.
 
-Final handoff also checks whitespace and local documentation links. Only README, these seven documents and the local CI workflow are intended changes; application source, lockfile and historical weekly records are unchanged. Main protection was the only remote mutation.
+Whitespace and local documentation links passed validation. This PR changes only README, seven project documents and the CI workflow; application source, lockfile and historical weekly records are unchanged. Authorized remote changes comprise the feature branch/PR publication and main protection configuration. Merge still requires teammate review and passing required checks.
