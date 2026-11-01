@@ -37,7 +37,7 @@ Agree on the [API contract](api-contract-draft.md) before parallel implementatio
 
 ## GitHub workflow (required)
 
-Feature branch → PR → **at least one eligible human teammate's approving review** → passing required CI → merge. Authors cannot approve themselves; new reviewable code requires fresh approval. Resolve review conversations. No direct pushes to main and no admin/maintainer bypass. See [policy and live enforcement status](github-collaboration-rules.md); local CI preparation is not yet an enforced remote check.
+Feature branch → PR → **at least one eligible human teammate's approving review** → passing required CI → merge. Authors cannot approve themselves; new reviewable code requires fresh approval. Resolve review conversations. No direct pushes to main and no admin/maintainer bypass. See [policy and live enforcement status](github-collaboration-rules.md); review protection and the GitHub Actions **Typecheck and build** check are now enforced on main.
 
 ## Discord-ready message
 

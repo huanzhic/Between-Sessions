@@ -12,7 +12,9 @@ Permanent user-required policy, recorded November 1, 2026. Applies to all three 
 
 ## Setup status
 
-Overall status: **PARTIALLY ENFORCED**. Main peer-review protection is **ENFORCED**, verified through authenticated GitHub REST readback on November 1, 2026 at 20:22:00 UTC (12:22 PM America/Los_Angeles). CI enforcement is **PENDING / NOT ENFORCED** until the local workflow is published separately and has a successful GitHub run. Local checks do not establish a required remote status.
+Current overall status: **ENFORCED**. After the user separately authorized GitHub publication on November 1, 2026, PR [#20](https://github.com/huanzhic/Between-Sessions/pull/20) published the workflow. GitHub Actions [run 41346826621](https://github.com/huanzhic/Between-Sessions/actions/runs/41346826621) successfully ran **Typecheck and build** on Node 22. Main now requires that exact check from GitHub Actions (`app_id: 15368`), with `strict: true` (up-to-date branches). Authenticated protection readback confirmed these values and retained all review/admin/conversation/force-push/deletion protections. No merge or bypass was performed. The earlier snapshot below records the preparation phase before publication.
+
+Preparation-phase status: **PARTIALLY ENFORCED**. Main peer-review protection was verified through authenticated GitHub REST readback on November 1, 2026 at 20:22:00 UTC (12:22 PM America/Los_Angeles); CI was pending at that time.
 
 Initial audit found classic protection 404, no rulesets/effective rules, and zero Actions workflows. With verified admin access, this task created classic main protection using only the authorized review/branch settings. No unrelated settings were changed.
 
@@ -26,7 +28,7 @@ Initial audit found classic protection 404, no rulesets/effective rules, and zer
 | Admin/maintainer enforcement, no bypass actors | `enforce_admins.enabled: true`; no PR bypass allowances returned; no rulesets | ENFORCED |
 | No direct unreviewed code pushes | Required PR/review protection applies to admins | ENFORCED by settings; no push attempted |
 | Block force pushes/deletion | Both `allow_force_pushes.enabled` and `allow_deletions.enabled: false` | ENFORCED |
-| Required CI | `required_status_checks` absent; zero remote workflows at audit | PENDING / NOT ENFORCED |
+| Required CI | Current readback: `checks: [{context: "Typecheck and build", app_id: 15368}]`, `strict: true`; successful GitHub run linked above | ENFORCED |
 
 Readback endpoints: `/repos/huanzhic/Between-Sessions/branches/main/protection` returned 200 with the values above; `/rulesets?includes_parents=true` and `/rules/branches/main` each returned zero entries. Classic protection is the active mechanism. `/collaborators?per_page=100` confirmed `JackAlmutairi` and `StanLeeEng` have write access and `huanzhic` has admin access. This is access verification only; Backend A/B allocations remain TBD. No bypass actors were configured. No PR, push, review, merge or deletion behavior was exercised.
 
@@ -50,8 +52,8 @@ Read REST `GET /repos/huanzhic/Between-Sessions/branches/main/protection`, `/rul
 
 Expected behavior after verified configuration: an unapproved PR cannot merge; author approval never counts; new reviewable commits invalidate old approval; direct code pushes/admin bypasses are rejected; unresolved threads block merging; required CI must pass **once CI enforcement is enabled**. A properly reviewed PR merge updates main normally. Do not test enforcement with a direct push, artificial PR or merge in this task; those actions are outside authorization. Settings inspection is not an observed behavioral test.
 
-## Pending manual actions
+## Next team action
 
-After separately authorizing publication, land the local workflow through a feature PR with peer review. Observe a successful GitHub Actions run, then add the exact reported check as required and verify readback. Recheck eligible human collaborators and use this workflow for the first real PR. If permission/plan blocks setup, use the checklist above and retain NOT ENFORCED/PARTIALLY ENFORCED until verified; do not claim Markdown enforces settings.
+A human teammate must review PR #20. Any new reviewable commits need fresh approval and a successful check on the latest revision. Merge only after those requirements are satisfied. Publication and initial successful CI/check enforcement are complete; the PR remains unmerged.
 
 Reference: [GitHub's branch-protection setup guide](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
