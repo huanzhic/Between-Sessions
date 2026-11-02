@@ -6,7 +6,7 @@ The project's only risk register, as of November 1, 2026. Ranked by likelihood a
 
 | Rank | Risk (condition and consequence) | Category | Likelihood and why | Impact and why | Owner | Trigger | Response |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | The production target is not yet agreed with the partner, so week 10 deployment work could target the wrong place. | Business | High: not yet agreed | High: Checkpoint 2 checks this deployment | Stanley Eng (proposed) | No agreement by November 5 | Mitigate: ask Justin now; bring it to the November 5 meeting. |
+| 1 | The production target is not yet agreed with the partner, so week 10 deployment work could target the wrong place. | Business | High: not yet agreed | High: Checkpoint 2 checks this deployment | Stanley Eng (proposed) | No agreement by November 5 | Mitigate: asked Justin on November 1; bring it to the November 5 meeting if unanswered. |
 | 2 | Meeting records choose a native App Store app while the current plan recommends responsive web, so work could be built for the wrong platform. | Business | High: the conflict is open | High: changes the whole client stack | Stanley Eng (proposed) | Partner restates the native requirement | Mitigate: settle Q-1 with Justin alongside rank 1. |
 | 3 | The proposed therapist assignment and inbox conflict with the October 22 deferral, so the core flow may lose its second half. | Business | Medium: the proposal is newer but unconfirmed | High: changes data model and scope | Zhicheng Huang (proposed) | Justin or a legal reviewer rejects therapist features | Mitigate: confirm scope before Milestone 2; keep the client flow usable alone. |
 | 4 | Backend A and Backend B roles are unassigned, so foundation work has no owner. | Team | High: both recorded as TBD | Medium: delays the skeleton, though the scaffold exists | Stanley Eng (proposed) | Roles still TBD on November 8 | Mitigate: assign at the November 5 meeting. |
@@ -20,7 +20,7 @@ The project's only risk register, as of November 1, 2026. Ranked by likelihood a
 
 | Prerequisite | Needed for | Who asks | Who decides | Asked on | Status |
 | --- | --- | --- | --- | --- | --- |
-| Agreement on the production target (Render, web) | Checkpoint milestone; week 10 deployment | Stanley Eng (proposed) | Justin Jacques | Not yet asked as of November 1, 2026 | Open; to close by November 5, 2026 |
+| Agreement on the production target (Render, web) | Checkpoint milestone; week 10 deployment | Stanley Eng | Justin Jacques | November 1, 2026 | Asked; awaiting reply; to close by November 5, 2026 |
 | Render account for the fictional skeleton | Week 10 deployment | Stanley Eng (proposed) | Team; whether the partner must approve is unconfirmed | Not yet asked | Open |
 | Render and Anthropic BAAs | Any real patient data; **not** the fictional skeleton | Not yet assigned | Signer undecided (Q-5) | Not yet asked | Not started |
 | API key, OpenRouter preferred, for fictional prototyping | Optional AI work | Zhicheng Huang (issue #16, closed as completed) | Justin Jacques | Closed by October 25, 2026; exact request date not recorded | Delivery open (issue #18) |
