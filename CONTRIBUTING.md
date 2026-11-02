@@ -54,7 +54,7 @@ Full policy and enforcement evidence: [GitHub collaboration rules](docs/project/
 | Lint and format pass | Not enforced yet: CI step planned by November 15, 2026 (proposed owner: Stanley Eng) |
 | Security checks | Not enforced yet: dependency audit in CI planned by November 22, 2026 (proposed owner: Stanley Eng) |
 
-CI has been shown to fail when behavior breaks: [a deliberately broken `/health` went red](CI_RED_RUN_URL) on a throwaway pull request that was closed unmerged.
+CI has been shown to fail when behavior breaks: [a deliberately broken `/health` went red](https://github.com/huanzhic/Between-Sessions/actions/runs/41370725045) on throwaway [pull request 21](https://github.com/huanzhic/Between-Sessions/pull/21), which was not merged.
 
 ## Where other work lives
 
