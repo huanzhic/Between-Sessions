@@ -6,7 +6,7 @@ Between Sessions, as of November 1, 2026. Only FR-1 and FR-2 are implemented; ev
 
 ## Problem statement
 
-Clients in therapy have thoughts and unfinished topics between appointments, when their therapist is unavailable, and much of that can be lost by the next session. Between Sessions, introduced by Justin Jacques at the October 11 kickoff, aims to help clients reflect between appointments and bring what matters back to the next one, while handling sensitive data safely and staying easy to use. It supports therapy and does not replace it.
+Clients in therapy have thoughts and unfinished topics between appointments, when their therapist is unavailable, and much of that can be lost by the next session. Between Sessions, introduced by Justin Jacques at the October 11 kickoff, aims to help clients reflect between appointments and bring what matters back to the next one, while handling sensitive data safely and staying easy to use. It supports therapy and does not replace it. The proposed first milestone is an appointment-preparation workflow, not a live therapy chatbot or a crisis-monitoring system.
 
 ## Functional requirements
 
@@ -36,7 +36,7 @@ Clients in therapy have thoughts and unfinished topics between appointments, whe
 
 Limits the team did not choose:
 
-- **C-1 HIPAA and BAAs.** Any service that stores, processes, or transmits protected health information needs a signed Business Associate Agreement before real patient data is used. No agreement has been signed. Details: [tech stack research](research/baa-tech-stack.md).
+- **C-1 HIPAA and BAAs.** Any service that stores, processes, or transmits protected health information needs a signed Business Associate Agreement before real patient data is used. No agreement has been signed. A BAA discussion or a UI disclaimer is not proof of HIPAA compliance, and any real-client pilot also needs separate organizational, privacy and security, and clinical review. Details: [tech stack research](research/baa-tech-stack.md).
 - **C-2 Synthetic data.** The project brief requires synthetic or properly de-identified data for development and testing.
 - **C-3 No clinical claims.** The product makes no claim of clinical effectiveness and gives no diagnosis or treatment advice.
 - **C-4 Course timeline.** A walking skeleton must be deployed by fall week 10, about December 6, 2026.
@@ -62,10 +62,13 @@ Not planned for the current milestones: real patient data, open-ended therapeuti
 | --- | --- | --- |
 | Q-1 | Native App Store app (October 22 decision) or responsive web (current recommendation)? | Stanley Eng, with Justin |
 | Q-2 | Are therapist assignment and inbox in scope, given the October 22 deferral? | Zhicheng Huang, with Justin |
-| Q-3 | When can a client send: before the next appointment, or after the prior session? Is the window configurable? | Zhicheng Huang, with Justin |
+| Q-3 | When can a client send: the 24 hours before the next appointment, the 24 hours after a session, or a therapist-set threshold? What happens if an appointment is rescheduled? | Team, until the Backend B role is assigned; with Justin |
 | Q-4 | Do summaries shared with therapists become part of clinical notes? | Justin |
 | Q-5 | Who signs the Render and Anthropic BAAs? | Stanley Eng, with Justin |
 | Q-6 | What may AI receive and retain, and which model is used? | Zhicheng Huang |
 | Q-7 | What distinguishes the product: customization, wearables, a therapeutic approach, or something else? | Jack Almutairi |
+| Q-8 | One sent letter per activity, or edits and resubmission after sending? What does a therapist see if an appointment is canceled? | Team, until the Backend B role is assigned; with Justin |
+| Q-9 | What should the prototype SOS page show, and who evaluates any future real service or location-specific resources? | Team, with Justin |
+| Q-10 | Which facts must an AI summary preserve, and how are missed or changed details evaluated with fictional test cases? | Zhicheng Huang |
 
 Owners above are proposed. The full list of unresolved decisions is in [Decisions and open questions](project/decisions-and-open-questions.md).

@@ -33,7 +33,7 @@ Linting and formatting do not exist yet. ESLint and Prettier, with a CI step, ar
 
 Full policy and enforcement evidence: [GitHub collaboration rules](docs/project/github-collaboration-rules.md).
 
-- A pull request includes a short summary, how it was validated, and any doc changes the behavior requires.
+- Keep pull requests small. A pull request includes a short summary, how it was validated, and any doc changes the behavior requires.
 - It needs **1 approval** from another human teammate with write access: Zhicheng Huang (`huanzhic`), Stanley Eng (`StanLeeEng`), or Jack Almutairi (`JackAlmutairi`). Authors cannot approve their own work.
 - New pushes dismiss earlier approvals, and the latest push must be approved by someone other than its pusher. All review conversations must be resolved.
 - Reviews are expected within **48 hours**.

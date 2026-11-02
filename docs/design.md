@@ -53,7 +53,7 @@ flowchart LR
 
 *Planned, not built: one React app and one Node API backed by Postgres. Only the API calls the LLM, and that call is optional.*
 
-Selected in [tech stack research](research/baa-tech-stack.md) on October 25 and not yet implemented: Render for hosting, Render Postgres, Better Auth inside the API, and the Claude API. The team also chose to avoid AWS for now and to use TypeScript throughout. Module layout and ownership are proposed in [MVP scope](project/mvp-scope-and-architecture.md#architecture-target) and [team roles](project/team-roles-and-development-order.md).
+Selected in [tech stack research](research/baa-tech-stack.md) on October 25 and not yet implemented: Render for hosting, Render Postgres, Better Auth inside the API, and the Claude API. The team also chose to avoid AWS for now and to use TypeScript throughout. The proposed shape is one shared repository, one modular backend, and one responsive frontend with separate client and therapist routes. Native mobile and Apple Watch stay future directions to discuss. Module layout and ownership are proposed in [MVP scope](project/mvp-scope-and-architecture.md#architecture-target) and [team roles](project/team-roles-and-development-order.md).
 
 ## Deployment
 
