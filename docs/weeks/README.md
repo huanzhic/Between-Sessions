@@ -27,3 +27,9 @@ Copy the three starter files from [`TEMPLATE/`](TEMPLATE/) into the new dated fo
 Register each source once in the [source index](../research/sources/source-index.md). Use its stable ID (such as `S001`) in weekly research records rather than repeating the full citation. Add the dated weekly folder to the source index's “Used in weekly records” column when relevant.
 
 Only include meeting summaries and research material approved for this repository. Do not add private correspondence, meeting recordings, real client data, or identifiable sensitive research data.
+
+## Research questions
+
+Huang's CBT and LLM background research belongs to the October 11 research cycle, as confirmed by the user. Do not list it as new October 15 research merely because its document is dated October 15. Preserve the document date separately from weekly attribution.
+
+Research questions must identify substantive knowledge gaps, not simply restate tasks such as exploring a platform, obtaining API access, or choosing a stack. Use a short numbered list of plain questions, following the user's preference; do not expand each question into scope, evidence, or output sections unless requested. Keep action assignments and owners in the plan; distinguish proposed investigations from verified findings.
