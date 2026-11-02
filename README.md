@@ -2,7 +2,9 @@
 
 ## Project stage
 
-We are at the project kickoff stage. Our current work is to frame the problem, review relevant research, and discuss the project with instructors and university stakeholders. Project requirements, research questions, and technical choices are still being refined. This project does not claim clinical effectiveness.
+Between Sessions aims to help therapy clients reflect between appointments and bring what matters to the next one. The repository holds a tested scaffold, not the product: a React page with one heading and an API with one health endpoint. Nothing is deployed, and development uses fictional data only. This project does not claim clinical effectiveness.
+
+Start with [requirements](docs/requirements.md), [design](docs/design.md), [risks](docs/risks.md), and [contributing](CONTRIBUTING.md).
 
 ## Repository structure
 
@@ -65,17 +67,21 @@ Prepared November 1, 2026 for team/Justin review. These documents propose the re
 - [Repository audit and change plan](docs/project/repository-change-plan.md)
 - [Required GitHub collaboration rules and enforcement status](docs/project/github-collaboration-rules.md)
 
-## Development setup
+## Quickstart
 
-Requires Node.js 22 or later.
+Requires Node.js 22 or later and Git. From a clean clone:
 
 ```sh
-npm install
+git clone https://github.com/huanzhic/Between-Sessions.git
+cd Between-Sessions
+npm ci
 cp .env.example .env
-npm run dev:web    # frontend at http://localhost:5173
-npm run dev:api    # API at http://localhost:3000/health
-npm run typecheck
+npm test
+npm run dev:api    # in one terminal: http://localhost:3000/health returns {"status":"ok"}
+npm run dev:web    # in another terminal: http://localhost:5173 shows "Between Sessions"
 ```
+
+The quickstart starts only the scaffold; the web app and API do not call each other yet. See [CONTRIBUTING](CONTRIBUTING.md) for the full set of checks.
 
 ## Weekly workflow
 
@@ -89,5 +95,3 @@ npm run typecheck
 ## Information handling
 
 Do not commit real client records, therapy notes, EHR data, identifiable sensitive research data, credentials, or secrets. Store only meeting summaries that are appropriate for the repository; do not upload private email threads or meeting recordings here. Follow the team charter and obtain the required approval before sharing project code, partner information, or meeting content with AI tools. Use synthetic or properly de-identified data for development and testing, as required by the project brief.
-
-This structure is a starting point for the kickoff phase and can grow as the team moves into design and development.

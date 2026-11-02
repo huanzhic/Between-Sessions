@@ -2,7 +2,7 @@
 
 ## Current status — November 1, 2026
 
-The user authorized GitHub publication. The nine-file change is committed on `docs/mvp-plan-and-review-workflow`, based on main `b628c95`, and published as [PR #20](https://github.com/huanzhic/Between-Sessions/pull/20). GitHub Actions has passed on Node 22. Main requires the **Typecheck and build** GitHub Actions check with up-to-date branches, plus peer approval, stale-review dismissal, last-push approval and resolved conversations. Protection applies to admins, with no configured bypass; force pushes and deletion are blocked. Overall protection is **ENFORCED**; see [readback evidence](github-collaboration-rules.md). The PR remains unmerged. No deployment was performed.
+The user authorized GitHub publication. The nine-file change is committed on `docs/mvp-plan-and-review-workflow`, based on main `b628c95`, and published as [PR #20](https://github.com/huanzhic/Between-Sessions/pull/20). GitHub Actions has passed on Node 22. Main requires the **Typecheck and build** GitHub Actions check with up-to-date branches, plus peer approval, stale-review dismissal, last-push approval and resolved conversations. Protection applies to admins, with no configured bypass; force pushes and deletion are blocked. Overall protection is **ENFORCED**; see [readback evidence](github-collaboration-rules.md). PR #20 has since been merged. No deployment was performed.
 
 ## Initial audit history — before publication
 

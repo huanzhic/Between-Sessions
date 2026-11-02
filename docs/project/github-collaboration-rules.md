@@ -12,7 +12,7 @@ Permanent user-required policy, recorded November 1, 2026. Applies to all three 
 
 ## Setup status
 
-Current overall status: **ENFORCED**. After the user separately authorized GitHub publication on November 1, 2026, PR [#20](https://github.com/huanzhic/Between-Sessions/pull/20) published the workflow. GitHub Actions [run 41346826621](https://github.com/huanzhic/Between-Sessions/actions/runs/41346826621) successfully ran **Typecheck and build** on Node 22. Main now requires that exact check from GitHub Actions (`app_id: 15368`), with `strict: true` (up-to-date branches). Authenticated protection readback confirmed these values and retained all review/admin/conversation/force-push/deletion protections. No merge or bypass was performed. The earlier snapshot below records the preparation phase before publication.
+Current overall status: **ENFORCED**. After the user separately authorized GitHub publication on November 1, 2026, PR [#20](https://github.com/huanzhic/Between-Sessions/pull/20) published the workflow. GitHub Actions [run 41346826621](https://github.com/huanzhic/Between-Sessions/actions/runs/41346826621) successfully ran **Typecheck and build** on Node 22. Main now requires that exact check from GitHub Actions (`app_id: 15368`), with `strict: true` (up-to-date branches). Authenticated protection readback confirmed these values and retained all review/admin/conversation/force-push/deletion protections. PR #20 has since been merged. The earlier snapshot below records the preparation phase before publication.
 
 Preparation-phase status: **PARTIALLY ENFORCED**. Main peer-review protection was verified through authenticated GitHub REST readback on November 1, 2026 at 20:22:00 UTC (12:22 PM America/Los_Angeles); CI was pending at that time.
 
@@ -54,6 +54,6 @@ Expected behavior after verified configuration: an unapproved PR cannot merge; a
 
 ## Next team action
 
-A human teammate must review PR #20. Any new reviewable commits need fresh approval and a successful check on the latest revision. Merge only after those requirements are satisfied. Publication and initial successful CI/check enforcement are complete; the PR remains unmerged.
+PR #20 is merged. For later PRs, any new reviewable commits need fresh approval and a successful check on the latest revision. Merge only after those requirements are satisfied.
 
 Reference: [GitHub's branch-protection setup guide](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).

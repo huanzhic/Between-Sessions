@@ -25,6 +25,7 @@ All decisions below are OPEN. "Approver" identifies who should agree, not someon
 | What may AI receive and retain? Which model/plan/provider? | Explicit source selection, server-only call, fictional data only. API access is not suitability or paid-plan approval | Team + Justin; Huang rubric, Backend B integration, A privacy |
 | Who signs BAAs; which vendors/features/intermediaries are covered? | Research is not a signed agreement or HIPAA-ready system; no paid activation or PHI. Verify actual agreements/configuration separately before any pilot | Authorized account/entity owner and appropriate institutional/legal reviewer with Justin; team gathers evidence |
 | Relationship enrollment, auth/session choices, assignment edits, retention and deletion? | Server authorization mandatory; library-specific paths, lifecycle and retention not finalized | Backend A + B + Huang; Justin for user-facing boundaries |
+| Which facts must an AI summary preserve, and how are missed or changed details evaluated? | Fictional test cases only, including omission and meaning-change checks | Huang drafts; team reviews |
 | Which teammate takes Backend A/B? | Names TBD; Huang owns frontend/AI feature design only | All three teammates |
 
 ## Current scope and collaboration requirements
