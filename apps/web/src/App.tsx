@@ -1,3 +1,65 @@
+import { useEffect, useState } from "react";
+import { Health } from "./Health";
+import { Client } from "./Client";
+import { Therapist } from "./Therapist";
+
 export default function App() {
-  return <h1>Between Sessions</h1>;
+  const [route, setRoute] = useState(() =>
+    typeof window === "undefined"
+      ? "/client"
+      : window.location.hash.slice(1) || "/client",
+  );
+  useEffect(() => {
+    const change = () => setRoute(window.location.hash.slice(1) || "/client");
+    window.addEventListener("hashchange", change);
+    return () => window.removeEventListener("hashchange", change);
+  }, []);
+  const therapist = route.startsWith("/therapist");
+  return (
+    <div className={therapist ? "app therapist" : "app client"}>
+      <a className="skip" href="#main">
+        Skip to content
+      </a>
+      <div className="demo-bar">
+        <span>Fictional demo · Milestone 1 · No sign-in or server storage</span>
+        <nav aria-label="Demo roles">
+          <a href="#/client">Client demo</a>
+          <a href="#/therapist">Therapist demo</a>
+          <a href="#/sos">SOS resources</a>
+        </nav>
+      </div>
+      {route === "/sos" ? (
+        <main id="main" className="sos">
+          <a href="#/client">Between Sessions</a>
+          <h1>SOS resources</h1>
+          <h2>Prototype resource placeholder</h2>
+          <p>
+            This page does not contact emergency services or your therapist.
+            Nobody is monitoring this entry.
+          </p>
+          <p>
+            Location-specific resources and the final support flow have not been
+            selected for this prototype.
+          </p>
+          <a className="button secondary" href="#/client">
+            Return to client home
+          </a>
+        </main>
+      ) : null}
+      {therapist ? (
+        <Therapist route={route} />
+      ) : (
+        <div hidden={route === "/sos"}>
+          <Client route={route} />
+        </div>
+      )}
+      <footer className="system-footer">
+        <Health />
+        <p>
+          Demo actions use fictional data in memory. Refreshing clears your
+          writing.
+        </p>
+      </footer>
+    </div>
+  );
 }

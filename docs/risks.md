@@ -18,6 +18,8 @@ The project's only risk register, as of November 1, 2026. Ranked by likelihood a
 
 ## External prerequisites
 
+Frontend foundation integration note (November 4): role selection is a demo control, not authentication. Drafts exist only in React memory; refresh and role changes discard them. `/health` is the only real API connection. All business persistence, ownership, conflicts, sending policy and delivery remain unverified until Backend A/B implement their Milestone 1/2 work. Static production hosting must configure the `/api` proxy separately. Do not interpret passing UI tests as server privacy tests.
+
 | Prerequisite | Needed for | Who asks | Who decides | Asked on | Status |
 | --- | --- | --- | --- | --- | --- |
 | Agreement on the production target (Render, web) | Checkpoint milestone; week 10 deployment | Stanley Eng | Justin Jacques | November 1, 2026 | Asked; awaiting reply; to close by November 5, 2026 |
