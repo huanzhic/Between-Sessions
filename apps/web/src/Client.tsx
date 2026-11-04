@@ -38,7 +38,11 @@ export function Client({ route }: { route: string }) {
       "/client/letters",
     ].includes(route);
   return (
-    <main id="main" className={`client-main ${home ? "home" : ""}`}>
+    <main
+      id={route === "/sos" ? undefined : "main"}
+      tabIndex={-1}
+      className={`client-main ${home ? "home" : ""}`}
+    >
       <header className="client-header">
         <a href="#/client">Between Sessions</a>
         <a className="button secondary" href="#/sos">

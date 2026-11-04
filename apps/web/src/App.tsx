@@ -17,7 +17,14 @@ export default function App() {
   const therapist = route.startsWith("/therapist");
   return (
     <div className={therapist ? "app therapist" : "app client"}>
-      <a className="skip" href="#main">
+      <a
+        className="skip"
+        href="#main"
+        onClick={(event) => {
+          event.preventDefault();
+          document.getElementById("main")?.focus();
+        }}
+      >
         Skip to content
       </a>
       <div className="demo-bar">
@@ -29,7 +36,7 @@ export default function App() {
         </nav>
       </div>
       {route === "/sos" ? (
-        <main id="main" className="sos">
+        <main id="main" tabIndex={-1} className="sos">
           <a href="#/client">Between Sessions</a>
           <h1>SOS resources</h1>
           <h2>Prototype resource placeholder</h2>

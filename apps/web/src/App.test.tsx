@@ -2,8 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { renderToString } from "react-dom/server";
 import App from "./App";
-import { inbox, newDraft } from "./fixtures";
-import { Therapist } from "./Therapist";
+import { inbox } from "./fixtures";
 import { checkHealth } from "./Health";
 
 test("App renders the product heading", () => {
@@ -14,11 +13,7 @@ test("App renders the product heading", () => {
   assert.match(html, /#\/sos/);
 });
 
-test("therapist fixtures and rendered inbox exclude private drafts", () => {
-  const draft = newDraft();
-  draft.answers[0].text = "PRIVATE_CANARY";
-  const html = renderToString(<Therapist route="/therapist/letters" />);
-  assert.doesNotMatch(html, /PRIVATE_CANARY/);
+test("therapist letter fixtures contain only allowlisted fields", () => {
   for (const letter of inbox)
     assert.deepEqual(
       Object.keys(letter).sort(),

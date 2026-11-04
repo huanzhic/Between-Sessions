@@ -69,7 +69,7 @@ export function Therapist({ route }: { route: string }) {
           <small>Therapist workspace</small>
         </p>
       </aside>
-      <main id="main" className="therapist-main">
+      <main id="main" tabIndex={-1} className="therapist-main">
         {route === "/therapist" ? (
           <>
             <header className="page-header">

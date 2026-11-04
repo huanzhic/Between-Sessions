@@ -1,5 +1,36 @@
 import { test, expect } from "@playwright/test";
 
+for (const [route, label] of [
+  ["/client/reflection", "Your private answer"],
+  ["/client/summary", "Your letter draft"],
+  ["/therapist/tasks", "Topic"],
+]) {
+  test(`keyboard skip preserves route and input on ${route}`, async ({
+    page,
+  }) => {
+    await page.goto(`/#${route}`);
+    await page.getByLabel(label, { exact: true }).fill("Keep my input");
+    await page.getByRole("link", { name: "Skip to content" }).focus();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(new RegExp(`#${route}$`));
+    await expect(page.getByRole("main")).toBeFocused();
+    await expect(page.getByLabel(label, { exact: true })).toHaveValue(
+      "Keep my input",
+    );
+  });
+}
+
+test("skip focuses the SOS main without changing the route", async ({
+  page,
+}) => {
+  await page.goto("/#/sos");
+  await page.getByRole("link", { name: "Skip to content" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/#\/sos$/);
+  await expect(page.getByRole("main")).toBeFocused();
+  await expect(page.locator('[id="main"]')).toHaveCount(1);
+});
+
 test("real health, failed save, retry, SOS and role isolation", async ({
   page,
 }) => {
