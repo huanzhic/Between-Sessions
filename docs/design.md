@@ -66,7 +66,7 @@ Where changes will be exercised before users and how they will be undone are in 
 
 ## Decisions deferred on purpose
 
-- **API web framework, migration tool and test database:** proposed on November 4, 2026 for Backend B: Hono, Prisma with a split schema (`auth.prisma` for Backend A, `workflow.prisma` for Backend B), and Postgres 16 in Docker Compose locally and as a CI service. Not yet agreed by Backend A or Huang; see the [decision log](project/decisions-and-open-questions.md#decision-log-awaiting-agreement).
+- **API web framework, migration tool and test database:** proposed on November 4, 2026 by Backend B: Hono for the API, Prisma for the database, `prisma dev` for a local database without Docker, and a Postgres service in CI. Backend A owns the schema and migrations; Backend B's table needs are in the [workflow schema proposal](project/workflow-schema-proposal.md). Not yet agreed by Backend A or Huang; see the [decision log](project/decisions-and-open-questions.md#decision-log-awaiting-agreement).
 - **Shared contracts package:** `packages/contracts` exists as the proposed single source of request/response shapes. The API and web app adopt it only after the team agrees.
 - **Native mobile:** responsive web first is recommended, pending Q-1.
 - **Sending-window policy:** proposed as configurable until Q-3 is settled, so no timing rule is coded yet.
