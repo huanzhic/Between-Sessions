@@ -21,6 +21,7 @@ flowchart LR
 | --- | --- | --- |
 | Web app | `apps/web` | React 19 and TypeScript on Vite. `App.tsx` renders one heading. |
 | API | `apps/api` | TypeScript on `node:http`. `src/server.ts` builds the server and `src/index.ts` starts it. No web framework has been chosen. |
+| Contracts | `packages/contracts` | Zod schemas and inferred types for the DTOs and request bodies in the [API contract draft](project/api-contract-draft.md), with tests. No app imports it yet; the size limits in `src/common.ts` are proposals. |
 | Database folder | `db` | README and empty `migrations/` and `seeds/` folders. No schema or database connection. |
 | CI | `.github/workflows/ci.yml` | Runs `npm ci`, typecheck, tests, and build on every pull request and on pushes to `main`. |
 
@@ -65,9 +66,8 @@ Where changes will be exercised before users and how they will be undone are in 
 
 ## Decisions deferred on purpose
 
-- **API web framework:** the placeholder server is enough until real routes exist.
-- **Migration tool:** no schema exists yet.
-- **Shared contracts package:** added only when both apps consume it.
+- **API web framework, migration tool and test database:** proposed on November 4, 2026 for Backend B: Hono, Prisma with a split schema (`auth.prisma` for Backend A, `workflow.prisma` for Backend B), and Postgres 16 in Docker Compose locally and as a CI service. Not yet agreed by Backend A or Huang; see the [decision log](project/decisions-and-open-questions.md#decision-log-awaiting-agreement).
+- **Shared contracts package:** `packages/contracts` exists as the proposed single source of request/response shapes. The API and web app adopt it only after the team agrees.
 - **Native mobile:** responsive web first is recommended, pending Q-1.
 - **Sending-window policy:** proposed as configurable until Q-3 is settled, so no timing rule is coded yet.
 
