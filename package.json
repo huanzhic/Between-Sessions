@@ -2,6 +2,7 @@
   "name": "between-sessions",
   "private": true,
   "workspaces": [
+    "packages/*",
     "apps/*"
   ],
   "scripts": {
