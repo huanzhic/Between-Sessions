@@ -1,6 +1,6 @@
 # Technical design
 
-The system at November 1, 2026. What runs today is small, so this document separates **what exists** from **what is planned**. Planned parts are proposals awaiting team and partner agreement.
+Updated November 4, 2026 for the Milestone 1 frontend. What runs today is small, so this document separates **what exists** from **what is planned**. Planned backend parts remain proposals awaiting team and partner agreement.
 
 ## Context
 
@@ -13,13 +13,13 @@ flowchart LR
   gh[GitHub Actions] -->|typecheck, test, build| repo[(Repository)]
 ```
 
-*The web app and API run separately on a developer's machine and do not call each other yet. GitHub Actions checks the repository.*
+*The web app calls `/api/health`, proxied by Vite to the local Node API. Business screens use explicitly labeled fictional fixtures. GitHub Actions checks the repository.*
 
 ## Components that exist
 
 | Component | Location | What it does |
 | --- | --- | --- |
-| Web app | `apps/web` | React 19 and TypeScript on Vite. `App.tsx` renders one heading. |
+| Web app | `apps/web` | React 19/TypeScript/Vite, hash-based client and therapist navigation, SOS placeholder, real API health, in-memory simulated draft states. No authenticated routes or business API calls. |
 | API | `apps/api` | TypeScript on `node:http`. `src/server.ts` builds the server and `src/index.ts` starts it. No web framework has been chosen. |
 | Database folder | `db` | README and empty `migrations/` and `seeds/` folders. No schema or database connection. |
 | CI | `.github/workflows/ci.yml` | Runs `npm ci`, typecheck, tests, and build on every pull request and on pushes to `main`. |
@@ -27,6 +27,10 @@ flowchart LR
 Empty `.gitkeep` folders such as `apps/api/src/auth` and `apps/api/src/llm` mark intended locations and contain no code. `.env.example` lists `DATABASE_URL` and `ANTHROPIC_API_KEY`, but no code reads them; only `PORT` is used, and the API reads it from the process environment, not from `.env`.
 
 ## Interfaces and contracts
+
+Frontend fixtures are typed in `apps/web/src/fixtures.ts` against the API draft. Therapist fixture objects include only allowlisted sent-letter fields, never private drafts. The demo role selector is not an authorization control. Business operations remain unavailable on the actual API. No provider SDK or keys are included in the browser.
+
+Frontend visual authority is Figma Frontend v0.1: client warm-white/purple and therapist cool-white/blue-purple palettes in `styles.css`, with locally bundled Inter. Earlier repository palette suggestions do not override this user-selected source. Responsive layouts retain the 240px therapist sidebar on desktop and wrap navigation on mobile.
 
 The one implemented interface:
 
