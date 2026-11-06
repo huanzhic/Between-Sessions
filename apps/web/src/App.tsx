@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { Health } from "./Health";
 import { Client } from "./Client";
 import { Therapist } from "./Therapist";
+import { initialTodoList, type TodoList, type TodoProgress } from "./Todos";
 
 export default function App() {
+  const [todoLists, setTodoLists] = useState<TodoList[]>([initialTodoList]);
+  const [todoProgress, setTodoProgress] = useState<TodoProgress>({});
   const [route, setRoute] = useState(() =>
     typeof window === "undefined"
       ? "/client"
@@ -54,17 +57,34 @@ export default function App() {
         </main>
       ) : null}
       {therapist ? (
-        <Therapist route={route} />
+        <Therapist
+          route={route}
+          todoLists={todoLists}
+          onAssignTodo={(draft) => {
+            const list = { ...draft, id: crypto.randomUUID() };
+            setTodoLists((current) => [...current, list]);
+          }}
+        />
       ) : (
         <div hidden={route === "/sos"}>
-          <Client route={route} />
+          <Client
+            route={route}
+            todoLists={todoLists}
+            todoProgress={todoProgress}
+            onSaveTodo={(listId, completed) => {
+              setTodoProgress((current) => ({
+                ...current,
+                [listId]: completed,
+              }));
+            }}
+          />
         </div>
       )}
       <footer className="system-footer">
         <Health />
         <p>
           Demo actions use fictional data in memory. Refreshing clears your
-          writing.
+          writing, to-do lists, and progress.
         </p>
       </footer>
     </div>
