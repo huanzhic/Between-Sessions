@@ -2,7 +2,7 @@
 
 ## Project stage
 
-Between Sessions aims to help therapy clients reflect between appointments and bring what matters to the next one. The repository holds a tested scaffold, not the product: a React page with one heading and an API with one health endpoint. Nothing is deployed, and development uses fictional data only. This project does not claim clinical effectiveness.
+Between Sessions aims to help therapy clients reflect between appointments and bring what matters to the next one. The frontend now provides the Milestone 1 client/therapist shells, fictional reflection and approved-letter fixtures, simulated save/failure/retry states, and an independent SOS placeholder. A real health check connects to the API; the API still implements only `/health`. Nothing is deployed, and development uses fictional data only. This project does not claim clinical effectiveness.
 
 Start with [requirements](docs/requirements.md), [design](docs/design.md), [risks](docs/risks.md), and [contributing](CONTRIBUTING.md).
 
@@ -78,10 +78,29 @@ npm ci
 cp .env.example .env
 npm test
 npm run dev:api    # in one terminal: http://localhost:3000/health returns {"status":"ok"}
-npm run dev:web    # in another terminal: http://localhost:5173 shows "Between Sessions"
+npm run dev:web    # in another terminal: http://localhost:5173 opens the frontend demo
 ```
 
-The quickstart starts only the scaffold; the web app and API do not call each other yet. See [CONTRIBUTING](CONTRIBUTING.md) for the full set of checks.
+The Vite development server proxies `/api/health` to `http://localhost:3000/health`. Its status and retry action appear below the page. See [CONTRIBUTING](CONTRIBUTING.md) for the full set of checks.
+
+### Frontend foundation demo
+
+- `/#/client`: client home, reflection questions, manual letter editing and exact-content preview.
+- `/#/therapist`: overview, linked-client example, approved letters, assignment form and settings placeholder.
+- `/#/sos`: independent resource placeholder; no sign-in or backend required.
+
+The role links switch fictional previews; they are not authentication. Saves are simulated in memory, including a failure/retry control. Refreshing or switching to the therapist role clears client writing; visiting SOS preserves it. No text is persisted in browser storage or sent to the server. Sending, AI, account settings and real assignment creation are unavailable. Example sent letters are fixed fixtures, not delivery evidence. Backend ownership and authorization still need implementation.
+
+Colors follow [Between Sessions — Frontend v0.1](https://www.figma.com/design/vX1H6Um9USBwHEKtkLILH8), with separate client and therapist palettes. Inter is bundled locally. See the [GitHub/file change plan](docs/project/frontend-v01-change-plan.md).
+
+Browser checks, in addition to the existing CI checks:
+
+```sh
+npx playwright install chromium
+npx playwright test --config apps/web/playwright.config.ts
+```
+
+These start both local servers. Stop existing processes on ports 3000/5173 first. Production hosting needs a same-origin `/api/health` reverse proxy; Vite's development proxy is not included in the static build.
 
 ## Weekly workflow
 
