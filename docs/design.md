@@ -1,5 +1,7 @@
 # Technical design
 
+The task and pre-session brief demo uses fictional records in one browser tab. Only the text confirmed by the client is copied into the demo inbox. Refresh clears demo state. See the [brief specification](project/ai-summary-spec.md).
+
 Updated November 4, 2026 for the Milestone 1 frontend. What runs today is small, so this document separates **what exists** from **what is planned**. Planned backend parts remain proposals awaiting team and partner agreement.
 
 ## Context

@@ -479,3 +479,43 @@ nav a:hover {
     padding: 20px 24px;
   }
 }
+
+.task-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.task-row + .task-row {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.task-records:empty {
+  display: none;
+}
+
+.task-records {
+  padding-inline-start: 1.25rem;
+}
+
+.task-records li + li {
+  margin-top: 0.75rem;
+}
+
+.brief-note {
+  margin-inline-start: 1.5rem;
+}
+
+.brief-body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.task-form textarea[rows] {
+  min-height: 6rem;
+}
+
+.task-form .task-field + .task-field {
+  margin-top: 0.5rem;
+}
