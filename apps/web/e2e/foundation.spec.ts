@@ -21,7 +21,7 @@ test("therapist assigns a list and only the client sees progress", async ({
   ).toBeVisible();
 
   await page.getByRole("link", { name: "Client demo" }).click();
-  await page.getByRole("link", { name: "View to-do lists" }).click();
+  await page.getByRole("link", { name: "View tasks" }).click();
   const list = page
     .getByRole("heading", { name: "Before our next session" })
     .locator("..");
@@ -54,20 +54,20 @@ test("therapist assigns a list and only the client sees progress", async ({
   await expect(
     page.getByText("Saved in demo memory only · not sent"),
   ).toBeVisible();
-  await page.getByRole("link", { name: "Back to to-do lists" }).click();
+  await page.getByRole("link", { name: "Back to tasks" }).click();
   await expect(reflection).not.toBeChecked();
   await page
     .getByRole("link", { name: "Open reflection: A stressful moment at work" })
     .click();
   await expect(page.getByLabel("Your private answer")).toHaveValue("");
-  await page.getByRole("link", { name: "Back to to-do lists" }).click();
+  await page.getByRole("link", { name: "Back to tasks" }).click();
   await list
     .getByRole("link", { name: "Open reflection: Take a short break" })
     .click();
   await expect(page.getByLabel("Your private answer")).toHaveValue(
     "A private reflection answer",
   );
-  await page.getByRole("link", { name: "Back to to-do lists" }).click();
+  await page.getByRole("link", { name: "Back to tasks" }).click();
   await reflection.check();
   await list.getByRole("button", { name: "Save demo progress" }).click();
   await expect(
@@ -75,7 +75,7 @@ test("therapist assigns a list and only the client sees progress", async ({
   ).toBeVisible();
 
   await page.getByRole("link", { name: "Therapist demo" }).click();
-  await page.getByRole("link", { name: "To-do lists" }).click();
+  await page.getByRole("link", { name: "Tasks" }).click();
   await expect(
     page.getByText("Write down a topic", { exact: true }),
   ).toBeVisible();
@@ -89,7 +89,7 @@ test("therapist assigns a list and only the client sees progress", async ({
   await expect(
     page.getByText(/Before our next session · 2 of 2 complete/),
   ).toBeVisible();
-  await page.getByRole("link", { name: "View to-do lists" }).click();
+  await page.getByRole("link", { name: "View tasks" }).click();
   await expect(item).toBeChecked();
   await item.uncheck();
   await list.getByRole("button", { name: "Save demo progress" }).click();
@@ -135,7 +135,7 @@ test("real health, failed save, retry, SOS and role isolation", async ({
 }) => {
   await page.goto("/");
   await expect(page.getByText("API connected · /health")).toBeVisible();
-  await page.getByRole("link", { name: "View to-do lists" }).click();
+  await page.getByRole("link", { name: "View tasks" }).click();
   await page
     .getByRole("link", { name: "Open reflection: A stressful moment at work" })
     .click();
@@ -159,7 +159,7 @@ test("real health, failed save, retry, SOS and role isolation", async ({
     page.getByRole("heading", { name: "SOS resources" }),
   ).toBeVisible();
   await page.getByRole("link", { name: "Return to client home" }).click();
-  await page.getByRole("link", { name: "View to-do lists" }).click();
+  await page.getByRole("link", { name: "View tasks" }).click();
   await page
     .getByRole("link", { name: "Open reflection: A stressful moment at work" })
     .click();
@@ -172,10 +172,14 @@ test("real health, failed save, retry, SOS and role isolation", async ({
   ).toBeVisible();
   await expect(page.locator("body")).not.toContainText("PRIVATE_CANARY");
   await page.getByRole("link", { name: "Client demo" }).click();
-  await page.getByRole("link", { name: "View to-do lists" }).click();
+  await page.getByRole("link", { name: "View tasks" }).click();
   await page
     .getByRole("link", { name: "Open reflection: A stressful moment at work" })
     .click();
+  await expect(page.getByLabel("Your private answer")).toHaveValue(
+    "PRIVATE_CANARY",
+  );
+  await page.reload();
   await expect(page.getByLabel("Your private answer")).toHaveValue("");
 });
 
@@ -219,6 +223,8 @@ for (const width of [390, 768, 1440]) {
     for (const route of [
       "/client",
       "/client/reflection",
+      "/client/todos",
+      "/client/update",
       "/therapist",
       "/therapist/tasks",
     ]) {
@@ -249,4 +255,93 @@ test("therapist empty inbox is explicit", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "No letters yet" }),
   ).toBeVisible();
+});
+
+test("shared activity and topic reach Letters as a fixed demo snapshot", async ({
+  page,
+}) => {
+  await page.goto("/#/therapist/tasks");
+  await page.getByLabel("List title").fill("This week");
+  await page.getByLabel("Item 1 type").selectOption("activity");
+  await page.getByLabel("To-do item 1", { exact: true }).fill("Walks");
+  await page.getByLabel("Target count (optional)").fill("3");
+  await page
+    .getByLabel(/What would you like to know before/)
+    .fill("What changed your plans?");
+  await page.getByRole("button", { name: "Add item" }).click();
+  await page.getByLabel("Item 2 type").selectOption("event");
+  await page
+    .getByLabel("To-do item 2", { exact: true })
+    .fill("Schedule change");
+  await page.getByRole("button", { name: "Preview to-do list" }).click();
+  await expect(
+    page.getByText("Walks · Track an activity · Target: 3"),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Assign demo list" }).click();
+
+  await page.getByRole("link", { name: "Client demo" }).click();
+  await page.getByRole("link", { name: "View tasks" }).click();
+  await expect(page.getByText("No event recorded")).toBeVisible();
+  await page.getByRole("button", { name: "Didn’t happen this period" }).click();
+  await expect(
+    page.getByText("Didn’t happen this period", { exact: true }),
+  ).toBeVisible();
+  for (const note of ["PRIVATE_WALK_NOTE", "SHARED_WALK_NOTE"]) {
+    await page.getByRole("button", { name: "Log activity" }).click();
+    await page.getByLabel("Note (optional)").fill(note);
+    await page.getByRole("button", { name: "Save record" }).click();
+  }
+  await expect(page.getByText("2 / 3 logged")).toBeVisible();
+  await page
+    .getByLabel("What would you like to talk about?")
+    .fill("Schedule changes");
+  await page.getByRole("button", { name: "Save topic" }).click();
+  await page.getByRole("link", { name: "Prepare update for Dr. Lee" }).click();
+  const walks = page.getByRole("checkbox", {
+    name: "Walks — 2026-11-05",
+    exact: true,
+  });
+  await walks.nth(0).check();
+  await walks.nth(1).check();
+  const firstNote = page.getByRole("checkbox", {
+    name: "Share note: PRIVATE_WALK_NOTE",
+  });
+  await firstNote.check();
+  await page
+    .getByRole("checkbox", { name: "Share note: SHARED_WALK_NOTE" })
+    .check();
+  await page
+    .getByRole("checkbox", { name: "For the next session: Schedule changes" })
+    .check();
+  await page.getByRole("button", { name: "Create demo draft" }).click();
+  await expect(page.getByLabel("Update text")).toHaveValue(/PRIVATE_WALK_NOTE/);
+  await firstNote.uncheck();
+  await walks.nth(0).uncheck();
+  await expect(
+    page.getByRole("button", { name: "Review update" }),
+  ).toBeDisabled();
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "Create demo draft" }).click();
+  const expectedBody = await page.getByLabel("Update text").inputValue();
+  expect(expectedBody).toContain("1 shared record; 3 planned");
+  expect(expectedBody).toContain("SHARED_WALK_NOTE");
+  expect(expectedBody).not.toContain("PRIVATE_WALK_NOTE");
+  expect(expectedBody).not.toContain("Schedule change —");
+  await page.getByRole("button", { name: "Review update" }).click();
+  await page.getByRole("button", { name: "Send demo update" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Demo update sent" }),
+  ).toBeVisible();
+
+  await page.getByRole("link", { name: "Client demo" }).click();
+  await page.getByRole("link", { name: "View tasks" }).click();
+  await expect(page.getByText("2 / 3 logged")).toBeVisible();
+  await page.getByRole("button", { name: "Remove record" }).nth(1).click();
+  await expect(page.getByText("1 / 3 logged")).toBeVisible();
+  await page.getByRole("link", { name: "Therapist demo" }).click();
+  await page.getByRole("link", { name: "Letters", exact: true }).click();
+  const sent = page.getByRole("link", { name: /Between-session update/ });
+  await expect(sent).toHaveCount(1);
+  await sent.click();
+  expect(await page.locator(".brief-body").textContent()).toBe(expectedBody);
 });
