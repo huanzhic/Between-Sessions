@@ -26,6 +26,7 @@ model User {
   reflectionDrafts ReflectionDraft[]
   clientLetters    SentLetter[]      @relation("ClientLetters")
   therapistLetters SentLetter[]      @relation("TherapistLetters")
+  sendIdempotency  SendIdempotency[]
 
   therapistRelationships TherapistClient[] @relation("TherapistRelationships")
   clientRelationships    TherapistClient[] @relation("ClientRelationships")
@@ -104,13 +105,16 @@ model Appointment {
   id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   therapistClientId String   @map("therapist_client_id") @db.Uuid
   startsAt          DateTime @map("starts_at") @db.Timestamptz(6)
+  timeZone          String   @map("time_zone")
   status            String   @default("scheduled")
   version           Int      @default(1)
   createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   therapistClient TherapistClient @relation(fields: [therapistClientId], references: [id])
   activities      Activity[]
 
+  @@unique([id, therapistClientId])
   @@index([therapistClientId, startsAt], map: "appointments_relationship_start_idx")
   @@map("appointments")
 }
@@ -118,42 +122,47 @@ model Appointment {
 model Activity {
   id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   therapistClientId String   @map("therapist_client_id") @db.Uuid
-  appointmentId     String?  @map("appointment_id") @db.Uuid
-  title             String
-  description       String?
+  appointmentId     String   @map("appointment_id") @db.Uuid
+  topic             String
+  version           Int      @default(1)
   createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   therapistClient TherapistClient @relation(fields: [therapistClientId], references: [id])
-  appointment     Appointment?    @relation(fields: [appointmentId], references: [id])
+  appointment     Appointment     @relation(fields: [appointmentId, therapistClientId], references: [id, therapistClientId])
 
   questions ActivityQuestion[]
   drafts    ReflectionDraft[]
   letters   SentLetter[]
 
+  @@unique([id, appointmentId])
   @@index([therapistClientId], map: "activities_relationship_idx")
   @@index([appointmentId], map: "activities_appointment_idx")
   @@map("activities")
 }
 
 model ActivityQuestion {
-  id           String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  activityId   String @map("activity_id") @db.Uuid
-  questionText String @map("question_text")
-  position     Int
+  id         String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  activityId String @map("activity_id") @db.Uuid
+  prompt     String @map("question_text")
+  position   Int
 
   activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
 
   @@unique([activityId, position], map: "activity_question_position_unique")
+  @@unique([id, activityId])
   @@map("activity_questions")
 }
 
 model ReflectionDraft {
-  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  activityId   String   @map("activity_id") @db.Uuid
-  clientId     String   @map("client_id")
-  responses    Json     @default("{}")
-  summaryDraft String?  @map("summary_draft")
-  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  activityId     String   @map("activity_id") @db.Uuid
+  clientId       String   @map("client_id")
+  responses      Json     @default("[]")
+  privateWriting String   @default("") @map("private_writing")
+  summaryDraft   String   @default("") @map("summary_draft")
+  summaryOrigin  String   @default("manual") @map("summary_origin")
+  version        Int      @default(0)
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   activity Activity @relation(fields: [activityId], references: [id])
   client   User     @relation(fields: [clientId], references: [id])
@@ -164,18 +173,38 @@ model ReflectionDraft {
 }
 
 model SentLetter {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  activityId  String   @map("activity_id") @db.Uuid
-  clientId    String   @map("client_id")
-  therapistId String   @map("therapist_id")
-  content     String
-  sentAt      DateTime @default(now()) @map("sent_at") @db.Timestamptz(6)
+  id            String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  activityId    String           @map("activity_id") @db.Uuid
+  appointmentId String           @map("appointment_id") @db.Uuid
+  clientId      String           @map("client_id")
+  therapistId   String           @map("therapist_id")
+  approvedBody  String           @map("approved_body")
+  sourceVersion Int              @map("source_version")
+  policyVersion String           @map("policy_version")
+  sentAt        DateTime         @default(now()) @map("sent_at") @db.Timestamptz(6)
+  idempotency   SendIdempotency?
 
-  activity  Activity @relation(fields: [activityId], references: [id])
+  activity  Activity @relation(fields: [activityId, appointmentId], references: [id, appointmentId])
   client    User     @relation("ClientLetters", fields: [clientId], references: [id])
   therapist User     @relation("TherapistLetters", fields: [therapistId], references: [id])
 
-  @@index([therapistId, sentAt(sort: Desc)], map: "sent_letters_therapist_sent_idx")
+  @@index([therapistId, sentAt(sort: Desc), id], map: "sent_letters_therapist_sent_idx")
   @@index([clientId], map: "sent_letters_client_idx")
   @@map("sent_letters")
+}
+
+model SendIdempotency {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  actorId    String   @map("actor_id")
+  activityId String   @map("activity_id") @db.Uuid
+  key        String
+  bodyHash   String   @map("body_hash")
+  letterId   String   @unique @map("letter_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  actor  User       @relation(fields: [actorId], references: [id])
+  letter SentLetter @relation(fields: [letterId], references: [id])
+
+  @@unique([actorId, activityId, key])
+  @@map("send_idempotency")
 }
