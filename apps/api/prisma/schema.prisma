@@ -149,7 +149,6 @@ model ActivityQuestion {
   activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
 
   @@unique([activityId, position], map: "activity_question_position_unique")
-  @@unique([id, activityId])
   @@map("activity_questions")
 }
 
