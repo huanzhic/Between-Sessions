@@ -105,6 +105,7 @@ model Appointment {
   therapistClientId String   @map("therapist_client_id") @db.Uuid
   startsAt          DateTime @map("starts_at") @db.Timestamptz(6)
   status            String   @default("scheduled")
+  version           Int      @default(1)
   createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   therapistClient TherapistClient @relation(fields: [therapistClientId], references: [id])
