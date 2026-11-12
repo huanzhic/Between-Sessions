@@ -1,3 +1,4 @@
+
 {
   "name": "@between-sessions/api",
   "private": true,
@@ -17,6 +18,7 @@
     "typescript": "^5.8.0"
   },
   "dependencies": {
+    "@between-sessions/contracts": "*",
     "pg": "^8.23.1"
   }
 }
