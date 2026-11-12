@@ -19,6 +19,8 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
+      - name: Generate Prisma Client
+        run: npm run db:generate --workspace apps/api
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
