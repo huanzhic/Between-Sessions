@@ -1,0 +1,180 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               String            @id
+  name             String
+  email            String
+  role             String            @default("client")
+  emailVerified    Boolean           @default(false)
+  image            String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  sessions         Session[]
+  accounts         Account[]
+  reflectionDrafts ReflectionDraft[]
+  clientLetters    SentLetter[]      @relation("ClientLetters")
+  therapistLetters SentLetter[]      @relation("TherapistLetters")
+
+  therapistRelationships TherapistClient[] @relation("TherapistRelationships")
+  clientRelationships    TherapistClient[] @relation("ClientRelationships")
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model TherapistClient {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  therapistId String   @map("therapist_id")
+  clientId    String   @map("client_id")
+  status      String   @default("active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  therapist User @relation("TherapistRelationships", fields: [therapistId], references: [id])
+  client    User @relation("ClientRelationships", fields: [clientId], references: [id])
+
+  appointments Appointment[]
+  activities   Activity[]
+
+  @@unique([therapistId, clientId])
+  @@index([clientId], map: "therapist_clients_client_id_idx")
+  @@map("therapist_clients")
+}
+
+model Appointment {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  therapistClientId String   @map("therapist_client_id") @db.Uuid
+  startsAt          DateTime @map("starts_at") @db.Timestamptz(6)
+  status            String   @default("scheduled")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  therapistClient TherapistClient @relation(fields: [therapistClientId], references: [id])
+  activities      Activity[]
+
+  @@index([therapistClientId, startsAt], map: "appointments_relationship_start_idx")
+  @@map("appointments")
+}
+
+model Activity {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  therapistClientId String   @map("therapist_client_id") @db.Uuid
+  appointmentId     String?  @map("appointment_id") @db.Uuid
+  title             String
+  description       String?
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  therapistClient TherapistClient @relation(fields: [therapistClientId], references: [id])
+  appointment     Appointment?    @relation(fields: [appointmentId], references: [id])
+
+  questions ActivityQuestion[]
+  drafts    ReflectionDraft[]
+  letters   SentLetter[]
+
+  @@index([therapistClientId], map: "activities_relationship_idx")
+  @@index([appointmentId], map: "activities_appointment_idx")
+  @@map("activities")
+}
+
+model ActivityQuestion {
+  id           String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  activityId   String @map("activity_id") @db.Uuid
+  questionText String @map("question_text")
+  position     Int
+
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@unique([activityId, position], map: "activity_question_position_unique")
+  @@map("activity_questions")
+}
+
+model ReflectionDraft {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  activityId   String   @map("activity_id") @db.Uuid
+  clientId     String   @map("client_id")
+  responses    Json     @default("{}")
+  summaryDraft String?  @map("summary_draft")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  activity Activity @relation(fields: [activityId], references: [id])
+  client   User     @relation(fields: [clientId], references: [id])
+
+  @@unique([activityId, clientId], map: "reflection_draft_unique")
+  @@index([clientId], map: "reflection_drafts_client_idx")
+  @@map("reflection_drafts")
+}
+
+model SentLetter {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  activityId  String   @map("activity_id") @db.Uuid
+  clientId    String   @map("client_id")
+  therapistId String   @map("therapist_id")
+  content     String
+  sentAt      DateTime @default(now()) @map("sent_at") @db.Timestamptz(6)
+
+  activity  Activity @relation(fields: [activityId], references: [id])
+  client    User     @relation("ClientLetters", fields: [clientId], references: [id])
+  therapist User     @relation("TherapistLetters", fields: [therapistId], references: [id])
+
+  @@index([therapistId, sentAt(sort: Desc)], map: "sent_letters_therapist_sent_idx")
+  @@index([clientId], map: "sent_letters_client_idx")
+  @@map("sent_letters")
+}
