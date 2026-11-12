@@ -1,13 +1,60 @@
 import { useState } from "react";
-import { activity, inbox, newDraft } from "./fixtures";
+import { activity, inbox, newDraft, type PrivateDraft } from "./fixtures";
+import {
+  ClientTodoList,
+  initialTodoList,
+  reflectionPath,
+  type TodoList,
+  type TodoProgress,
+} from "./Todos";
 
-export function Client({ route }: { route: string }) {
-  const [draft, setDraft] = useState(newDraft);
-  const [question, setQuestion] = useState(0);
-  const [save, setSave] = useState("Not saved · demo only");
+export function Client({
+  route,
+  todoLists,
+  todoProgress,
+  onSaveTodo,
+}: {
+  route: string;
+  todoLists: TodoList[];
+  todoProgress: TodoProgress;
+  onSaveTodo: (listId: string, completed: number[]) => void;
+}) {
+  const reflectionRoute =
+    route === "/client/reflection"
+      ? reflectionPath(initialTodoList.id, initialTodoList.items[0].id)
+      : route;
+  const reflection = todoLists.flatMap((list) =>
+    list.items.filter(
+      (item) =>
+        item.kind === "reflection" &&
+        reflectionPath(list.id, item.id) === reflectionRoute,
+    ),
+  )[0];
+  const draftKey = reflection ? reflectionRoute : "/client/summary";
+  const [drafts, setDrafts] = useState<Record<string, PrivateDraft>>({});
+  const draft = drafts[draftKey] ?? newDraft();
+  const [questions, setQuestions] = useState<Record<string, number>>({});
+  const question = questions[reflectionRoute] ?? 0;
+  const [saveStatuses, setSaveStatuses] = useState<Record<string, string>>({});
+  const save = saveStatuses[draftKey] ?? "Not saved · demo only";
   const [fail, setFail] = useState(false);
   const [busy, setBusy] = useState(false);
   const q = activity.questions[question];
+  function setDraft(update: (value: PrivateDraft) => PrivateDraft) {
+    setDrafts((current) => ({
+      ...current,
+      [draftKey]: update(current[draftKey] ?? newDraft()),
+    }));
+  }
+  function setSave(status: string) {
+    setSaveStatuses((current) => ({ ...current, [draftKey]: status }));
+  }
+  function setQuestion(update: (value: number) => number) {
+    setQuestions((current) => ({
+      ...current,
+      [reflectionRoute]: update(current[reflectionRoute] ?? 0),
+    }));
+  }
   function changed() {
     setSave("Unsaved changes · demo only");
   }
@@ -31,12 +78,14 @@ export function Client({ route }: { route: string }) {
   }
   const home =
     route === "/client" ||
-    ![
-      "/client/reflection",
-      "/client/summary",
-      "/client/review",
-      "/client/letters",
-    ].includes(route);
+    (!reflection &&
+      ![
+        "/client/reflection",
+        "/client/summary",
+        "/client/review",
+        "/client/letters",
+        "/client/todos",
+      ].includes(route));
   return (
     <main
       id={route === "/sos" ? undefined : "main"}
@@ -55,25 +104,56 @@ export function Client({ route }: { route: string }) {
           <p className="lead">
             A space to gather what matters before your next session.
           </p>
+          <Privacy />
           <section className="card">
-            <h2>{activity.topic}</h2>
-            <p>From Dr. Lee · You can skip any question.</p>
-            <a className="button" href="#/client/reflection">
-              Continue reflection
+            <h2>To-do lists</h2>
+            {todoLists.length === 0 ? (
+              <p>No to-do lists assigned yet.</p>
+            ) : (
+              <ul>
+                {todoLists.map((list) => (
+                  <li key={list.id}>
+                    {list.title} · {todoProgress[list.id]?.length ?? 0} of{" "}
+                    {list.items.length} complete
+                  </li>
+                ))}
+              </ul>
+            )}
+            <a className="button secondary" href="#/client/todos">
+              View to-do lists
             </a>
           </section>
-          <Privacy />
           <Appointment />
           <a className="button secondary" href="#/client/letters">
             View sent letters
           </a>
         </>
-      ) : route === "/client/reflection" ? (
+      ) : route === "/client/todos" ? (
         <>
           <a href="#/client">Back to home</a>
+          <h1>To-do lists</h1>
+          <p>
+            Your checkmarks are private. You can write your summary at any time.
+          </p>
+          {todoLists.length === 0 && <p>No to-do lists assigned yet.</p>}
+          {todoLists.map((list) => (
+            <ClientTodoList
+              key={list.id}
+              list={list}
+              saved={todoProgress[list.id] ?? []}
+              onSave={onSaveTodo}
+            />
+          ))}
+          <a className="button secondary" href="#/client/summary">
+            Write your summary
+          </a>
+        </>
+      ) : reflection ? (
+        <>
+          <a href="#/client/todos">Back to to-do lists</a>
           <div className="writing-layout">
             <aside className="writing-context">
-              <h2>{activity.topic}</h2>
+              <h2>{reflection.text}</h2>
               <p>From Dr. Lee</p>
               <Appointment />
             </aside>
@@ -114,7 +194,7 @@ export function Client({ route }: { route: string }) {
                 >
                   Previous
                 </button>
-                {question < 2 ? (
+                {question < activity.questions.length - 1 ? (
                   <button
                     disabled={busy}
                     onClick={() => setQuestion((n) => n + 1)}
@@ -122,8 +202,8 @@ export function Client({ route }: { route: string }) {
                     Next / skip question
                   </button>
                 ) : (
-                  <a className="button" href="#/client/summary">
-                    Write your letter
+                  <a className="button" href="#/client/todos">
+                    Return to to-do lists
                   </a>
                 )}
               </div>
@@ -133,7 +213,7 @@ export function Client({ route }: { route: string }) {
         </>
       ) : route === "/client/summary" ? (
         <>
-          <a href="#/client/reflection">Back to reflection</a>
+          <a href="#/client/todos">Back to to-do lists</a>
           <h1>What would you like to bring?</h1>
           <p>Write your own letter. You decide what to share.</p>
           <label htmlFor="summary">Your letter draft</label>

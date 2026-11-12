@@ -1,18 +1,23 @@
 import { useState } from "react";
 import { activity, inbox } from "./fixtures";
+import { AssignTodos, type TodoDraft, type TodoList } from "./Todos";
 
 const links = [
   ["Overview", "/therapist"],
   ["Clients", "/therapist/clients"],
   ["Letters", "/therapist/letters"],
-  ["Reflection tasks", "/therapist/tasks"],
+  ["To-do lists", "/therapist/tasks"],
   ["Settings", "/therapist/settings"],
 ];
-export function Therapist({ route }: { route: string }) {
-  const [created, setCreated] = useState<{
-    topic: string;
-    questions: string[];
-  } | null>(null);
+export function Therapist({
+  route,
+  todoLists,
+  onAssignTodo,
+}: {
+  route: string;
+  todoLists: TodoList[];
+  onAssignTodo: (draft: TodoDraft) => void;
+}) {
   const [empty, setEmpty] = useState(false);
   const list = (
     <>
@@ -78,7 +83,7 @@ export function Therapist({ route }: { route: string }) {
                 <p>Prepare for the conversations ahead.</p>
               </div>
               <a className="button" href="#/therapist/tasks">
-                Create reflection
+                Assign a to-do list
               </a>
             </header>
             <div className="overview-grid">
@@ -111,67 +116,14 @@ export function Therapist({ route }: { route: string }) {
               <h2>Maya Chen</h2>
               <p>Next appointment: Nov 5, 2026 · 10:00 AM PT</p>
               <a className="button" href="#/therapist/tasks">
-                Create reflection
+                Assign a to-do list
               </a>
             </div>
           </>
         ) : route === "/therapist/tasks" ? (
           <>
-            <h1>Create a reflection</h1>
-            <p>Offer a topic and questions for the next appointment.</p>
-            <form
-              className="task-form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                const values = new FormData(e.currentTarget);
-                setCreated({
-                  topic: String(values.get("topic")),
-                  questions: activity.questions.map((q) =>
-                    String(values.get(q.id)),
-                  ),
-                });
-              }}
-              onChange={() => setCreated(null)}
-            >
-              <label htmlFor="client">Client</label>
-              <select id="client">
-                <option>Maya Chen</option>
-              </select>
-              <p>Appointment: Nov 5, 2026 · 10:00 AM · America/Los_Angeles</p>
-              <label htmlFor="topic">Topic</label>
-              <input
-                id="topic"
-                name="topic"
-                required
-                defaultValue={activity.topic}
-              />
-              {activity.questions.map((q) => (
-                <div key={q.id}>
-                  <label htmlFor={q.id}>Question {q.position}</label>
-                  <input
-                    id={q.id}
-                    name={q.id}
-                    required
-                    defaultValue={q.prompt}
-                  />
-                </div>
-              ))}
-              <button>Preview demo assignment</button>
-              {created ? (
-                <section role="status" className="notice">
-                  <h2>{created.topic}</h2>
-                  <ol>
-                    {created.questions.map((text, index) => (
-                      <li key={index}>{text}</li>
-                    ))}
-                  </ol>
-                  <p>
-                    Demo preview for Maya Chen. Nothing was created on the
-                    server or assigned to a client.
-                  </p>
-                </section>
-              ) : null}
-            </form>
+            <h1>To-do lists</h1>
+            <AssignTodos lists={todoLists} onAssign={onAssignTodo} />
           </>
         ) : route === "/therapist/settings" ? (
           <>
