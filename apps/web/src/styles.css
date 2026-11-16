@@ -479,3 +479,26 @@ nav a:hover {
     padding: 20px 24px;
   }
 }
+.ai-summary {
+  margin-block: 1.5rem;
+}
+.ai-summary fieldset {
+  min-width: 0;
+  margin-block: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border, #d8d4e2);
+  border-radius: 0.75rem;
+}
+.ai-answer {
+  display: grid;
+  gap: 0.5rem;
+  padding-block: 0.75rem;
+}
+.ai-source-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.ai-preview,
+.ai-suggestion {
+  margin-top: 1.25rem;
+}

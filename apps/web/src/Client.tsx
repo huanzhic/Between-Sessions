@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { activity, inbox, newDraft, type PrivateDraft } from "./fixtures";
+import { WeeklySummary, type WeeklyTask, type IntervalContext } from "./components/WeeklySummary";
 import {
   ClientTodoList,
   initialTodoList,
@@ -39,6 +40,20 @@ export function Client({
   const save = saveStatuses[draftKey] ?? "Not saved · demo only";
   const [fail, setFail] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [sourceVersion, setSourceVersion] = useState(0);
+  const [intervalContext, setIntervalContext] = useState<IntervalContext>({
+    previousSession: "", nextSession: "", personalMessage: "",
+  });
+  const summaryTasks: WeeklyTask[] = todoLists.flatMap((list) => list.items
+    .map((item) => {
+      const source = drafts[reflectionPath(list.id, item.id)];
+      const answers = (source?.answers ?? []).filter((answer) => answer.text.trim()).map((answer) => {
+        const question = activity.questions.find((value) => value.id === answer.questionId)!;
+        return { questionId: answer.questionId, question: question.prompt, text: answer.text };
+      });
+      return { id: `${list.id}/${item.id}`, title: item.text,
+        completed: (todoProgress[list.id] ?? []).includes(item.id), answers };
+    }));
   const q = activity.questions[question];
   function setDraft(update: (value: PrivateDraft) => PrivateDraft) {
     setDrafts((current) => ({
@@ -170,6 +185,7 @@ export function Client({
                 value={draft.answers[question].text}
                 onChange={(e) => {
                   const text = e.target.value;
+                  setSourceVersion((current) => current + 1);
                   setDraft((d) => ({
                     ...d,
                     answers: d.answers.map((a) =>
@@ -214,7 +230,7 @@ export function Client({
       ) : route === "/client/summary" ? (
         <>
           <a href="#/client/todos">Back to to-do lists</a>
-          <h1>What would you like to bring?</h1>
+          <h1>Your summary between sessions</h1>
           <p>Write your own letter. You decide what to share.</p>
           <label htmlFor="summary">Your letter draft</label>
           <textarea
@@ -223,7 +239,7 @@ export function Client({
             value={draft.summary.text}
             onChange={(e) => {
               const text = e.target.value;
-              setDraft((d) => ({ ...d, summary: { text, origin: "manual" } }));
+              setDraft((d) => ({ ...d, summary: { ...d.summary, text } }));
               changed();
             }}
           />
@@ -234,10 +250,12 @@ export function Client({
             setFail={setFail}
             onSave={saveDraft}
           />
-          <p className="notice">
-            AI help is optional and is not connected in this foundation demo.
-            You can complete your letter manually.
-          </p>
+          <WeeklySummary tasks={summaryTasks} version={sourceVersion} context={intervalContext}
+            onContextChange={setIntervalContext} letter={draft.summary.text} disabled={busy}
+            onAdopt={(text) => {
+              setDraft((d) => ({ ...d, summary: { text, origin: "ai-edited" } }));
+              changed();
+            }} />
           <a className="button" href="#/client/review">
             Review letter
           </a>

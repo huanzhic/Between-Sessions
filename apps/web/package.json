@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predev": "npm run build --workspace @between-sessions/contracts",
+    "pretest": "npm run build --workspace @between-sessions/contracts",
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
@@ -11,6 +13,7 @@
     "test": "node --import tsx --test \"src/**/*.test.tsx\""
   },
   "dependencies": {
+    "@between-sessions/contracts": "*",
     "@fontsource/inter": "^5.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

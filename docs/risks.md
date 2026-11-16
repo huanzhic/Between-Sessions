@@ -18,6 +18,8 @@ The project's only risk register, as of November 1, 2026. Ranked by likelihood a
 
 ## External prerequisites
 
+Local AI prototype update, November 16, 2026. The user selected DeepSeek for fictional local development. Each developer supplies a local API key in Git-ignored `.env.local`. The opt-in HTTP demo binds to loopback and is disabled in production mode. Real authentication, server-loaded owned sources, authoritative treatment-interval task association and session dates remain integration prerequisites. Local synthetic-data testing does not establish readiness for real-client use.
+
 Frontend foundation integration note (November 4): role selection is a demo control, not authentication. Drafts exist only in React memory; refresh and role changes discard them. `/health` is the only real API connection. All business persistence, ownership, conflicts, sending policy and delivery remain unverified until Backend A/B implement their Milestone 1/2 work. Static production hosting must configure the `/api` proxy separately. Do not interpret passing UI tests as server privacy tests.
 
 | Prerequisite | Needed for | Who asks | Who decides | Asked on | Status |

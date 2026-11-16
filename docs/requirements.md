@@ -22,7 +22,11 @@ Clients in therapy have thoughts and unfinished topics between appointments, whe
 | FR-8 | A client may request an AI-organized draft of their summary. | Could: useful, but the manual path must work first | Assumption | The draft is editable. AI never sends. A timeout or invalid output keeps edits and leaves the manual path usable. |
 | FR-9 | A clearly labeled SOS resource placeholder stays available regardless of writing, AI, appointment, or sending state. | Must: crisis needs may arise at any point | Assumption | Reachable with no appointment, a closed window, or an AI failure. The copy states it contacts nobody and that nobody monitors it. |
 
+The user confirmed on November 16 that FR-8 covers the previous-to-next therapy-session interval, including all assigned tasks and their saved completion, reflection content and a separate personal message. The demo supports explicit interval dates and task confirmation, preview, generation, adoption and editing. Task completion is copied from submitted records. A written reflection never implies task completion. Authoritative task/session association remains pending.
+
 ## Non-functional requirements
+
+November 16, 2026 local development progress for FR-8. A DeepSeek summary module, shared output schemas, mocked failure tests, a fixed fictional CLI demo and an opt-in loopback HTTP demo are implemented. The fictional browser flow now supports selection, preview, generation, adoption/editing and discard, with browser tests for failures, stale requests and invalid citations. Authentication, persistence and server-side source/version checks remain pending.
 
 | ID | Requirement | Priority and reason | Status | Acceptance criterion or test |
 | --- | --- | --- | --- | --- |

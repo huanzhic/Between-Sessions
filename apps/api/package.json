@@ -4,11 +4,16 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "ai:check": "tsx scripts/check-deepseek.ts",
+    "ai:summary": "tsx scripts/demo-summary.ts",
+    "preai:summary": "npm run build --workspace @between-sessions/contracts",
     "dev": "tsx watch src/index.ts",
+    "predev": "npm run build --workspace @between-sessions/contracts",
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "start": "node dist/index.js",
-    "test": "node --import tsx --test \"src/**/*.test.ts\""
+    "test": "node --import tsx --test \"src/**/*.test.ts\"",
+    "pretest": "npm run build --workspace @between-sessions/contracts"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
