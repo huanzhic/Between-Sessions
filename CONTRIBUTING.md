@@ -6,8 +6,9 @@ For whoever makes the next change: a teammate, the partner's developers, the tea
 
 Start with the [README quickstart](README.md#quickstart). Beyond that:
 
-- Copy `.env.example` to `.env`. No code loads this file yet. `DATABASE_URL` and `ANTHROPIC_API_KEY` are reserved for future code; if you need a key, ask a teammate privately, and never commit one.
+- `.env.example` contains historical database and Anthropic placeholders. For the DeepSeek demo, follow the README and configure root `.env.local`, which is loaded by local AI commands and development API startup. Keep credentials in that Git-ignored file.
 - No local services are needed yet.
+- For the local DeepSeek connection check, follow the README and fill in the Git-ignored root `.env.local`. Run `npm run ai:check --workspace apps/api` manually. This command makes a billable provider request with a fixed test message. Regular tests use mocks.
 - Use fictional data only. Never commit real client records, therapy notes, or credentials.
 
 ## Local checks

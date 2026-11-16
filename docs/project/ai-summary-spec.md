@@ -1,8 +1,20 @@
-# Optional AI summary specification (proposal)
+# Optional AI summary specification
 
-Prepared November 1, 2026. Huang owns requirements/prompts/evaluation; Backend B owns server provider invocation/keys, schema validation and failures; Backend A owns private-source access and storage protections. No provider call or clinical feature is implemented here.
+## Current treatment-interval scope
+
+Confirmed by the user on November 16, 2026. A summary covers the period from the previous therapy session to the next therapy session. Sources include all tasks assigned for that interval, their saved completion records, their reflection answers, and a separate user-authored personal message. The user confirms the included task set and previews all submitted content. The generated summary combines task progress and the client's own priorities into an editable letter.
+
+The demo asks for both session dates because it lacks authoritative session history and task-to-session relationships. It initially selects all currently assigned tasks and lets the user confirm or exclude tasks. The separate personal-message field survives adoption. No reflection answer is required. A reflection answer does not mark its task complete. Unchecked means not marked complete. The model must not infer unwillingness, failure, task frequency, reasons or clinical improvement.
+
+`WeeklySummarySources` and `WeeklySummarySuggestion` describe the interval request/response. `generateWeeklySummary` validates dates, source IDs and output. It attaches exact task records from the request. The frontend adds this complete checklist to the narrative when adopting the result. `ai:summary` uses fictional interval fixtures. The local HTTP route dispatches interval requests by `kind: treatment_interval`, while preserving the earlier reflection payload for existing callers. Keys remain in Git-ignored local configuration. Authentication, persistence, server-verified versions and authoritative task assignment remain pending.
+
+## Earlier reflection-source proposal
+
+The November 1 proposal below records the earlier reflection-focused design. The current source scope and schema are described above.
 
 ## Flow and privacy
+
+Local implementation update, November 16, 2026. The user selected DeepSeek for local fictional prototyping. `apps/api/src/llm/summary.ts` implements generation and structural/source-ID validation, with a fixed fictional `ai:summary` CLI and mocked tests. The key is read from Git-ignored `.env.local`. An opt-in loopback HTTP demo at `/demo/ai-summary` accepts explicitly supplied fictional sources. The client UI supports explicit source selection/preview, generation, adoption, editing and discard. Failure and timeout paths retain the letter. Authentication and server-loaded sources/version checks remain pending. The original role allocation above is a historical proposal. The user is implementing the AI module end to end.
 
 Client saves private responses, selects which question answers may be used and explicitly requests organization. Show what will be sent to the model before requesting it. Exclude private writing by default; any future inclusion needs explicit selection. Server verifies ownership and draft version, loads only selected answers and makes the call. Therapist cannot request or retrieve this output. The AI result remains a private suggestion; it does not replace a newer draft. Client reviews, edits or discards it, checks exact content/recipient and explicitly sends through the ordinary letter flow. Manual writing is equally visible and works with AI disabled or unavailable.
 

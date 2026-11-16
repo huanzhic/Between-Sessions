@@ -83,6 +83,47 @@ npm run dev:web    # in another terminal: http://localhost:5173 opens the fronte
 
 The Vite development server proxies `/api/health` to `http://localhost:3000/health`. Its status and retry action appear below the page. See [CONTRIBUTING](CONTRIBUTING.md) for the full set of checks.
 
+### Local DeepSeek connection check
+
+For fictional AI prototyping, create `.env.local` in the repository root with the following fields. Git ignores this file. Fill in the key locally.
+
+```dotenv
+DEEPSEEK_API_KEY=
+DEEPSEEK_MODEL=deepseek-flash
+```
+
+Run `npm run ai:check --workspace apps/api` from the repository root. The command loads `.env.local` and sends a fixed connection-test message to the official DeepSeek HTTPS endpoint. A small API charge may apply. It prints success or a safe error and keeps the key and response body out of its output. Automated tests use mocked requests.
+
+Run `npm run ai:summary --workspace apps/api` to generate a treatment-interval summary from fixed fictional tasks, completion records, reflections and a personal message. It builds the shared contracts first, loads the same local credentials and prints the validated fictional result. The module checks selected source IDs, unique sections, size limits, JSON and completion status, and attaches the caller's draft version. Source citations and schema checks cannot verify factual accuracy. Review negation, timing, people, uncertainty, omissions and unsupported additions manually. The local HTTP demo is described below. Ownership/version checks against storage remain pending.
+
+### Local summary HTTP demo
+
+Set `AI_SUMMARY_DEMO=true` alongside the DeepSeek fields in root `.env.local`, then run `npm run dev:api`. Development startup loads that file. This opt-in demo binds the API to `127.0.0.1` and exposes `POST /demo/ai-summary` (through Vite, `/api/demo/ai-summary`). Production mode disables it. The default API keeps the route disabled.
+
+Send `Content-Type: application/json` with a treatment-interval body such as the following. The earlier reflection-only payload remains supported for existing local callers.
+
+```json
+{
+  "kind": "treatment_interval",
+  "sourceDraftVersion": 1,
+  "period": { "previousSession": "2026-11-09", "nextSession": "2026-11-16" },
+  "tasks": [
+    { "id": "walk", "title": "Take a short walk", "completed": true, "answers": [] }
+  ],
+  "personalMessage": "I want to talk about what helped me feel supported."
+}
+```
+
+The response contains `sourceDraftVersion` and `sections`. Errors contain `{error:{code,message,requestId}}`. Input errors return 400/413/415, unsupported methods return 405, foreign browser origins return 403, provider failures return 429/502/503/504 and unexpected failures return 500. Responses use `Cache-Control: no-store`. Each valid request calls DeepSeek and may incur charges. The local demo accepts explicitly submitted fictional answers and a caller-supplied version. The authenticated activity endpoint and server-side ownership/version checks remain pending.
+
+### Using the between-session summary
+
+Start the local API with `AI_SUMMARY_DEMO=true` in root `.env.local`, then run `npm run dev:web`. Open **Write your summary**. Enter the previous and next therapy-session dates. All current tasks are included initially. Confirm which belong to this treatment interval because the demo has no stored task-to-session association. Save task checkmarks on the to-do screen before generating. Unchecked tasks are reported as **not marked complete**. Reflection answers remain separate from completion status.
+
+Fill in **What I want to express this interval**. This is a separate source field, preserved when adopting a generated summary. The summary combines included task records, their reflection answers, and this message. A personal message can be summarized even with no reflection answers. Choose **Preview interval content**, then **Generate summary**, then review and adopt or discard. The final letter includes the narrative and the exact completion record of every included task. The server attaches the completion record directly from the submitted data.
+
+Editing a date, personal message, task selection or letter clears the old preview and suggestion and cancels the browser request. Leaving the summary page clears preview/results, while dates and personal message remain in client memory. Refreshing or changing roles clears client data. Ownership, persistence and authoritative task-to-session association remain backend integration work.
+
 ### Frontend foundation demo
 
 - `/#/client`: client home, reflection questions, manual letter editing and exact-content preview.

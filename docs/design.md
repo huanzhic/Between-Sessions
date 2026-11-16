@@ -4,7 +4,7 @@ Updated November 4, 2026 for the Milestone 1 frontend. What runs today is small,
 
 ## Context
 
-Between Sessions helps therapy clients reflect between appointments. See [requirements](requirements.md). Today there is no user data, login, database, or AI call in the running code, and nothing is deployed.
+Between Sessions helps therapy clients reflect between appointments. See [requirements](requirements.md). The running web/API demo uses fictional data and has no login or database. The client summary screen can optionally invoke the local DeepSeek demo endpoint. A separate manually invoked local command checks DeepSeek connectivity with a fixed test message. Nothing is deployed.
 
 ```mermaid
 flowchart LR
@@ -25,7 +25,7 @@ flowchart LR
 | Database folder | `db` | README and empty `migrations/` and `seeds/` folders. No schema or database connection. |
 | CI | `.github/workflows/ci.yml` | Runs `npm ci`, typecheck, tests, and build on every pull request and on pushes to `main`. |
 
-Empty `.gitkeep` folders such as `apps/api/src/auth` and `apps/api/src/llm` mark intended locations and contain no code. `.env.example` lists `DATABASE_URL` and `ANTHROPIC_API_KEY`, but no code reads them; only `PORT` is used, and the API reads it from the process environment, not from `.env`.
+Empty `.gitkeep` folders such as `apps/api/src/auth` mark intended locations. For local fictional prototyping, `apps/api/src/llm/deepseek.ts` and `scripts/check-deepseek.ts` provide a manually invoked DeepSeek connection check. It loads the Git-ignored root `.env.local`, reads `DEEPSEEK_API_KEY` and `DEEPSEEK_MODEL`, and sends a fixed test message over HTTPS. Tests mock the provider. The default HTTP server exposes `/health`. Opt-in local demo routing is described below. `.env.example` retains historical database and Anthropic placeholders.
 
 ## Interfaces and contracts
 
@@ -41,6 +41,10 @@ The one implemented interface:
 | Any other path | `404` with an empty body |
 
 Proposed workflow endpoints are in the [API contract draft](project/api-contract-draft.md) and are not implemented.
+
+Local AI development now includes `generateSummary` in `apps/api/src/llm/summary.ts` and shared Zod schemas in `packages/contracts/src/ai-summary.ts`. The module uses DeepSeek JSON mode with fixed source-constrained instructions, a 30-second request timeout and output/source validation. Its caller supplies selected sources and a verified version. It returns an editable suggestion without persistence. The `ai:summary` command exercises it using fixed fictional inputs and prints their result. Automated tests mock the provider. The HTTP server invokes it through opt-in `POST /demo/ai-summary`, enabled by `AI_SUMMARY_DEMO=true` in development and bound to loopback. Development startup reads root `.env.local`. The route accepts explicit fictional answers and a caller-supplied version, bounds JSON request size and returns safe JSON errors with request IDs. Production disables this demo. The authenticated activity route and storage/version checks remain pending. The web summary screen now explicitly selects and previews reflection answers, requests a suggestion and offers adoption or discard. Editing the letter or leaving the summary screen aborts the browser request and clears stale suggestions. A client-issued source revision correlates requests and responses. Structural checks cannot establish source faithfulness.
+
+The client summary now covers an explicitly selected treatment interval between two therapy-session dates. `WeeklySummary` includes all current tasks by default, their saved completion states, nested reflection answers and a separate personal-message field. The user confirms task membership because the demo has no authoritative task/session association. `generateWeeklySummary` preserves exact task records, validates interval narrative sources and returns both narrative and task progress. The letter includes every selected task's recorded status. Existing reflection-only callers continue to work.
 
 ## Data model
 
