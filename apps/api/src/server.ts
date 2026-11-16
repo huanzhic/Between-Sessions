@@ -1,18 +1,26 @@
 import express from "express";
 import { createServer } from "node:http";
-import { toNodeHandler } from "better-auth/node";
-import { auth } from "./lib/auth.js";
 
 export function createApiServer() {
   const app = express();
 
-  // Better Auth routes
-  app.all("/api/auth/*path", toNodeHandler(auth));
+  // Load Better Auth only when an authentication request is made
+  app.all("/api/auth/*path", async (req, res) => {
+    try {
+      const { auth } = await import("./lib/auth.js");
+      const { toNodeHandler } = await import("better-auth/node");
 
-  // JSON parsing for other API routes
+      return toNodeHandler(auth)(req, res);
+    } catch (error) {
+      console.error("Authentication initialization failed:", error);
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Authentication unavailable" });
+      }
+    }
+  });
+
   app.use(express.json());
 
-  // Keep the existing health endpoint
   app.get("/health", (_req, res) => {
     res.json({ status: "ok" });
   });
