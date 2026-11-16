@@ -1,14 +1,21 @@
+import express from "express";
 import { createServer } from "node:http";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./lib/auth.js";
 
-// Placeholder server; the web framework is not chosen yet.
 export function createApiServer() {
-  return createServer((req, res) => {
-    if (req.url === "/health") {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ status: "ok" }));
-      return;
-    }
-    res.writeHead(404);
-    res.end();
+  const app = express();
+
+  // Better Auth routes
+  app.all("/api/auth/*path", toNodeHandler(auth));
+
+  // JSON parsing for other API routes
+  app.use(express.json());
+
+  // Keep the existing health endpoint
+  app.get("/health", (_req, res) => {
+    res.json({ status: "ok" });
   });
+
+  return createServer(app);
 }

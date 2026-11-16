@@ -2,45 +2,55 @@
 
 ## Overview
 
-Backend A provides the database schema, Prisma configuration, PostgreSQL migration, and Better Auth foundation for Between Sessions.
+Backend A provides the PostgreSQL database schema, Prisma configuration, SQL migration, and Better Auth integration for Between Sessions.
 
-This implementation prepares the data structures needed by Backend B's appointment, activity, reflection, and letter workflows.
+The database supports the therapist-client relationships, appointments, activities, reflection drafts, and sent letters required by Backend B's workflow APIs.
 
-**Current status:** Prisma schema and authentication foundation implemented. Database connection, authentication endpoints, authorization enforcement, and workflow persistence remain pending.
+**Current status:** PostgreSQL connectivity, the initial migration, Prisma Client generation, and Better Auth authentication endpoints have been implemented and tested in development. Server-side authorization and Backend B workflow persistence remain unfinished.
 
-## Implementation
+This implementation uses fictional development data only and is not approved for real patient information or clinical use.
+
+## Implementation Status
 
 | Component | Location | Status |
 |---|---|---|
-| Prisma schema | `apps/api/prisma/schema.prisma` | Implemented |
-| PostgreSQL migration | `db/migrations/001_initial_schema.sql` | Generated, not executed |
-| Prisma Client | `apps/api/src/generated/prisma/` | Generation verified |
-| Better Auth foundation | `apps/api/` | Configuration prepared |
-| Authentication endpoints | API | Not implemented |
-| Database connection | PostgreSQL | Not configured |
-| Authorization enforcement | API | Not implemented |
-
-The schema contains 11 models, including four authentication models and seven application models.
+| Prisma schema | `apps/api/prisma/schema.prisma` | Implemented and validated |
+| PostgreSQL migration | `db/migrations/20261115000000_initial_schema/migration.sql` | Applied successfully |
+| Prisma configuration | `apps/api/prisma7.config.ts` | Configured |
+| Prisma Client | `apps/api/src/generated/prisma/` | Generated successfully |
+| PostgreSQL connection | `apps/api/src/lib/prisma.ts` | Implemented |
+| Better Auth configuration | `apps/api/src/lib/auth.ts` | Implemented |
+| Authentication routes | `apps/api/src/server.ts` | Implemented |
+| Authentication registration and login | Development API | Manually tested |
+| Database constraints | PostgreSQL migration | Applied |
+| Sent-letter immutability trigger | PostgreSQL migration | Applied; behavior not yet tested |
+| Server-side authorization | API | Not implemented |
+| Backend B workflow persistence | API | Not implemented |
 
 ## Database Models
+
+The Prisma schema contains 12 models.
 
 | Model | Purpose |
 |---|---|
 | `User` | Stores client and therapist identities |
-| `Session` | Better Auth session records |
-| `Account` | Better Auth account and credential records |
-| `Verification` | Better Auth verification records |
+| `Session` | Stores Better Auth sessions |
+| `Account` | Stores authentication account records |
+| `Verification` | Stores authentication verification records |
 | `TherapistClient` | Links therapists with their assigned clients |
-| `Appointment` | Stores scheduled appointments, time zones, statuses, and versions |
-| `Activity` | Stores therapist-assigned activities linked to appointments |
-| `ActivityQuestion` | Stores ordered questions for each activity |
-| `ReflectionDraft` | Stores private client answers, writing, and summaries |
+| `Appointment` | Stores appointments, statuses, time zones, and versions |
+| `Activity` | Stores therapist-assigned activities |
+| `ActivityQuestion` | Stores ordered questions belonging to activities |
+| `ReflectionDraft` | Stores private writing, summaries, and draft versions |
+| `DraftAnswer` | Stores individual answers to activity questions |
 | `SentLetter` | Stores approved letter content and recipient references |
-| `SendIdempotency` | Supports safe handling of repeated send requests |
+| `SendIdempotency` | Supports duplicate-send protection |
 
 ## Backend B Contract Mapping
 
-Backend B defines workflow request and response contracts in `packages/contracts`. Backend A's database schema supports those contracts through the following mappings.
+Backend B defines the workflow request and response contracts in `packages/contracts`.
+
+Backend A provides the persistence structure for these contracts.
 
 | Backend B contract | Prisma model / field |
 |---|---|
@@ -54,7 +64,7 @@ Backend B defines workflow request and response contracts in `packages/contracts
 | `ActivityView.topic` | `Activity.topic` |
 | `ActivityView.questions` | `ActivityQuestion[]` |
 | `ActivityView.version` | `Activity.version` |
-| `PrivateDraft.answers` | `ReflectionDraft.responses` |
+| `PrivateDraft.answers` | `DraftAnswer[]` |
 | `PrivateDraft.privateWriting` | `ReflectionDraft.privateWriting` |
 | `PrivateDraft.summary.text` | `ReflectionDraft.summaryDraft` |
 | `PrivateDraft.summary.origin` | `ReflectionDraft.summaryOrigin` |
@@ -62,25 +72,38 @@ Backend B defines workflow request and response contracts in `packages/contracts
 | `SentLetterView.approvedBody` | `SentLetter.approvedBody` |
 | `SentLetterView.sentAt` | `SentLetter.sentAt` |
 
-Backend B must map database records to the public DTOs rather than returning Prisma records directly.
+Backend B must map database records into the public DTOs instead of returning Prisma records directly.
 
-### Appointments and Activities
+## Appointments and Activities
 
 Every activity references an appointment and a therapist-client relationship.
 
-The schema uses a composite foreign key to ensure that an activity's appointment belongs to the same therapist-client relationship.
+Composite foreign keys ensure that the referenced appointment belongs to the same therapist-client relationship as the activity.
 
 Appointment and activity versions begin at `1`.
 
-Appointment statuses are stored as strings. Backend B must validate supported values, including `scheduled` and `canceled`.
+Supported appointment statuses are `scheduled` and `canceled`.
 
-### Reflection Drafts
+PostgreSQL enforces these values through a `CHECK` constraint. API-level validation is still required.
+
+## Reflection Drafts
 
 Each client can have one reflection draft per activity.
 
-Unlike Backend B's proposed relational answer tables, Backend A stores the draft's answers as JSON in `ReflectionDraft.responses`.
+Reflection answers use a relational design rather than JSON storage.
 
-The draft also stores:
+The `DraftAnswer` model stores:
+
+- The associated reflection draft.
+- The associated activity.
+- The question being answered.
+- The answer text.
+
+Composite foreign keys ensure that each answer belongs to a question from the correct activity.
+
+A unique constraint on `(draftId, questionId)` prevents duplicate answers to the same question within one draft.
+
+The `ReflectionDraft` model also stores:
 
 - `privateWriting` — private client writing.
 - `summaryDraft` — editable summary text.
@@ -88,127 +111,210 @@ The draft also stores:
 - `version` — optimistic concurrency version, initially `0`.
 - `updatedAt` — last modification timestamp.
 
-Backend B must validate that submitted question IDs belong to the assigned activity and that the stored JSON matches the expected contract.
+The database establishes structural integrity, but Backend B must implement draft saving, version-conflict handling, and access restrictions.
 
-The JSON-based design is a proposed simplification for the demo and requires Backend B agreement.
+## Sent Letters
 
-### Sent Letters
+Sent letters store a separate copy of the exact content approved for sending.
 
-Sent letters contain a separate copy of the exact client-approved content.
-
-The schema stores:
+Each letter contains:
 
 - Approved letter body.
 - Sending client and receiving therapist IDs.
 - Activity and appointment references.
+- Therapist-client relationship reference.
 - Source draft version.
 - Send-policy version.
 - Send timestamp.
 
-A composite foreign key ensures that a letter's appointment matches its referenced activity.
+Composite foreign keys enforce consistency between the letter's activity, appointment, client, therapist, and therapist-client relationship.
 
-The schema also provides an index for therapist inbox queries ordered by send time.
+An index supports therapist inbox queries ordered by send time.
 
-**Important:** The database currently does not enforce sent-letter immutability through a trigger. Backend B must not expose update or delete operations for sent letters. Stronger database-level enforcement is deferred.
+### Immutability
 
-### Send Idempotency
+The initial PostgreSQL migration includes the `sent_letters_immutable` trigger.
 
-`SendIdempotency` stores the sending actor, activity, idempotency key, request body hash, and associated letter.
+The trigger calls `prevent_sent_letter_changes()` before an `UPDATE` or `DELETE` operation on `sent_letters`.
+
+The function raises an exception to reject modifications and deletions.
+
+The migration containing this trigger was successfully applied to the development database.
+
+**Validation limitation:** The trigger's presence was checked during development, but its behavior against an existing sent-letter record has not yet been tested.
+
+Backend B must also avoid exposing update or delete operations for sent letters.
+
+## Send Idempotency
+
+`SendIdempotency` stores:
+
+- Sending actor.
+- Activity.
+- Idempotency key.
+- Request body hash.
+- Associated sent letter.
 
 A unique constraint on `(actorId, activityId, key)` supports duplicate-request detection.
 
-Backend B must implement the retry behavior, including returning the existing letter for an identical request and rejecting conflicting reuse of an idempotency key.
+Backend B must implement the application behavior, including returning an existing letter for an identical retry and rejecting conflicting reuse of an idempotency key.
 
-The database model alone does not implement this behavior.
+The database constraint alone does not implement this behavior.
 
-## Authentication and Authorization
+## Authentication
 
-Backend A includes the database models required by Better Auth.
+Backend A uses Better Auth with a Prisma adapter and PostgreSQL.
 
-The `User` model supports the `client` and `therapist` roles, with `client` as the default.
+The authentication implementation includes:
 
-Authentication endpoints, session resolution, and role-based authorization are not yet implemented.
+- Better Auth configuration in `apps/api/src/lib/auth.ts`.
+- Prisma database integration in `apps/api/src/lib/prisma.ts`.
+- Express authentication routes under `/api/auth/*path`.
+- Email-and-password authentication.
+- Client and therapist roles, with `client` as the default.
+- Environment-based authentication configuration.
 
-Before connecting the workflow APIs, Backend A and Backend B must coordinate on:
+The API also preserves the `/health` endpoint.
+
+### Development Verification
+
+Authentication was manually tested using a fictional patient account.
+
+The following operations succeeded:
+
+- User registration.
+- Email-and-password login.
+- Session creation.
+- Persistence of authentication records in PostgreSQL.
+
+The test database was subsequently reset to validate the initial migration.
+
+### Authentication Configuration
+
+Local development requires environment variables including:
+
+- `DATABASE_URL`
+- `BETTER_AUTH_SECRET`
+- `BETTER_AUTH_URL`
+
+Actual credentials and secrets must remain outside version control.
+
+## Authorization
+
+Authentication identifies a user, but it does not automatically establish permission to access workflow data.
+
+Server-side authorization remains unfinished.
+
+Backend A and Backend B must coordinate on:
 
 1. Resolving the authenticated user from the server session.
 2. Restricting therapist access to actively linked clients.
-3. Ensuring clients can access only their own assigned activities and private drafts.
+3. Ensuring clients can access only their assigned activities and drafts.
 4. Preventing therapists from accessing private reflection content.
-5. Validating letter recipients against the activity's therapist-client relationship.
-6. Enforcing authorization during database reads and writes.
+5. Validating letter recipients against the relevant therapist-client relationship.
+6. Enforcing authorization on database reads and writes.
 
 Frontend role switching is not a substitute for server-side authorization.
 
-## Database Constraints and Validation
+## Database Constraints
 
-The PostgreSQL migration includes Prisma-generated primary keys, foreign keys, unique constraints, and indexes.
+The PostgreSQL migration includes primary keys, foreign keys, composite foreign keys, unique constraints, and indexes.
 
-These support relationship integrity, question ordering, unique drafts, and idempotency-key uniqueness.
+Four additional `CHECK` constraints restrict supported values:
 
-Additional PostgreSQL `CHECK` constraints and sent-letter immutability triggers are not included in the current migration.
+| Constraint | Allowed values |
+|---|---|
+| `user_role_check` | `client`, `therapist` |
+| `appointments_status_check` | `scheduled`, `canceled` |
+| `therapist_clients_status_check` | `active`, `inactive` |
+| `reflection_drafts_summary_origin_check` | `manual`, `ai-edited` |
 
-Backend B's Zod contracts validate workflow request shapes and field values. Backend A remains responsible for identity, relationship access, and database protections.
+The migration containing these constraints was successfully applied.
 
-Neither the Prisma schema nor Zod validation alone establishes complete application security.
+The constraint definitions were checked during development. Individual invalid-value rejection tests have not yet been completed.
+
+Database constraints provide an additional protection layer but do not replace API validation or authorization.
+
+## Database Migration
+
+The Prisma migration configuration points to:
+
+`../../db/migrations`
+
+The initial migration is stored at:
+
+`db/migrations/20261115000000_initial_schema/migration.sql`
+
+The development database was originally initialized using `prisma db push`.
+
+To test the actual SQL migration, the disposable development database was reset using Prisma Migrate.
+
+The reset successfully applied `20261115000000_initial_schema`.
+
+A subsequent `npx prisma migrate status` confirmed:
+
+`Database schema is up to date!`
+
+This verifies that the complete initial migration executed successfully against the development PostgreSQL database.
+
+The reset removed the previous fictional test account and session data.
+
+**Migration caution:** This initial migration was tested against a reset development database. Existing populated or shared databases require a separate migration strategy rather than an unconditional reset.
 
 ## Backend B Integration Handoff
 
-Backend B can use the Prisma schema as the proposed persistence structure for its workflow endpoints.
-
-Before connecting persistence, the team should confirm:
+Backend B can use the updated Prisma schema as the persistence structure for workflow endpoints.
 
 | Integration item | Required action |
 |---|---|
-| Session identity | Agree on the authenticated session interface |
-| Reflection answers | Accept JSON storage or agree on a relational alternative |
-| Draft versions | Implement version checks for concurrent saves |
-| Appointment ownership | Use existing therapist-client relationships |
-| Letter sending | Validate recipient, versions, policy, and authorization |
-| Idempotency | Implement duplicate-send handling |
-| Sent-letter immutability | Prevent modifications; determine stronger database enforcement |
+| Session identity | Integrate authenticated session resolution |
+| Reflection answers | Use relational `DraftAnswer` records |
+| Draft versions | Implement optimistic concurrency checks |
+| Appointment ownership | Enforce therapist-client relationship permissions |
+| Letter sending | Validate recipients, versions, policy, and authorization |
+| Idempotency | Implement duplicate-send behavior |
+| Sent-letter immutability | Preserve database protection and avoid modification endpoints |
 | Response DTOs | Map Prisma records to shared Zod contracts |
 
-These are integration requirements, not completed functionality.
+These are integration requirements, not completed workflow functionality.
 
 ## Validation
 
-The following checks passed during local development:
+The following checks have been completed during development:
 
 | Check | Result |
 |---|---|
-| Prisma schema formatting | Passed |
 | Prisma schema validation | Passed |
 | Prisma Client generation | Passed |
 | TypeScript typecheck | Passed |
-| Automated tests | 20 passed |
-| Production build | Passed |
+| PostgreSQL migration execution | Passed |
+| Prisma migration status | Up to date |
+| Authentication registration | Passed manually |
+| Authentication login | Passed manually |
+| Authentication session persistence | Verified manually |
 
-These results verify the current codebase's formatting, schema validation, generation, compilation, and existing automated tests.
+Additional testing is required for authorization, ownership restrictions, constraint rejection behavior, sent-letter immutability behavior, and complete workflow persistence.
 
-They do not establish that database migrations, authentication, authorization, or workflow persistence work end-to-end.
+Earlier automated-test and production-build results should be rechecked against the updated code before being reported as current.
 
 ## Current Limitations
 
-- No PostgreSQL database is connected.
-- The SQL migration has not been executed against PostgreSQL.
-- No fictional database seed has been implemented.
-- Authentication routes and session enforcement remain unfinished.
-- Role-based and ownership authorization checks remain unfinished.
+- Server-side role and ownership authorization remain unfinished.
 - Backend B workflow endpoints are not yet connected to persistent storage.
-- Sent-letter immutability is not enforced at the database level.
-- Database integration and security behavior have not been tested end-to-end.
-
-This implementation is intended for a fictional-data development demo. It is not ready for real patient information or clinical use.
+- Draft version conflicts and letter-send idempotency behavior remain unimplemented.
+- Database trigger and constraint behavior need negative-case testing.
+- Complete end-to-end workflow tests have not been performed.
+- The development environment is not approved for real patient information.
 
 ## Next Steps
 
-1. Obtain Backend B review of the schema and JSON draft-storage decision.
-2. Connect PostgreSQL and execute the migration in a development environment.
-3. Add fictional client, therapist, and relationship seed data.
-4. Implement authentication and session-based authorization.
-5. Integrate Backend B's workflow endpoints with Prisma.
-6. Test access restrictions, version conflicts, and letter submission behavior.
+1. Complete Backend A review and merge the database and authentication changes.
+2. Coordinate session identity and authorization requirements with Backend B.
+3. Add fictional therapist, client, and relationship seed data.
+4. Implement and test role-based and ownership authorization.
+5. Integrate Backend B workflow endpoints with Prisma.
+6. Test draft version conflicts, letter sending, idempotency, and immutability.
+7. Run the complete automated test suite and production build.
 
 ## References
 

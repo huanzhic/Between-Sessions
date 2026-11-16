@@ -95,8 +95,12 @@ model TherapistClient {
 
   appointments Appointment[]
   activities   Activity[]
+  drafts       ReflectionDraft[]
+  letters      SentLetter[]
 
   @@unique([therapistId, clientId])
+  @@unique([id, clientId])
+  @@unique([id, clientId, therapistId])
   @@index([clientId], map: "therapist_clients_client_id_idx")
   @@map("therapist_clients")
 }
@@ -132,9 +136,11 @@ model Activity {
 
   questions ActivityQuestion[]
   drafts    ReflectionDraft[]
-  letters   SentLetter[]
+  letters             SentLetter[]
+  relationshipLetters SentLetter[] @relation("LetterActivityRelationship")
 
   @@unique([id, appointmentId])
+  @@unique([id, therapistClientId])
   @@index([therapistClientId], map: "activities_relationship_idx")
   @@index([appointmentId], map: "activities_appointment_idx")
   @@map("activities")
@@ -147,45 +153,68 @@ model ActivityQuestion {
   position   Int
 
   activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  answers  DraftAnswer[]
 
+  @@unique([id, activityId])
   @@unique([activityId, position], map: "activity_question_position_unique")
   @@map("activity_questions")
 }
 
 model ReflectionDraft {
-  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  activityId     String   @map("activity_id") @db.Uuid
-  clientId       String   @map("client_id")
-  responses      Json     @default("[]")
-  privateWriting String   @default("") @map("private_writing")
-  summaryDraft   String   @default("") @map("summary_draft")
-  summaryOrigin  String   @default("manual") @map("summary_origin")
-  version        Int      @default(0)
-  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  activityId        String   @map("activity_id") @db.Uuid
+  clientId          String   @map("client_id")
+  therapistClientId String   @map("therapist_client_id") @db.Uuid
+  privateWriting    String   @default("") @map("private_writing")
+  summaryDraft      String   @default("") @map("summary_draft")
+  summaryOrigin     String   @default("manual") @map("summary_origin")
+  version           Int      @default(0)
+  updatedAt         DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  activity Activity @relation(fields: [activityId], references: [id])
-  client   User     @relation(fields: [clientId], references: [id])
+  activity     Activity        @relation(fields: [activityId, therapistClientId], references: [id, therapistClientId])
+  relationship TherapistClient @relation(fields: [therapistClientId, clientId], references: [id, clientId])
+  client       User            @relation(fields: [clientId], references: [id])
+  answers      DraftAnswer[]
 
+  @@unique([id, activityId])
   @@unique([activityId, clientId], map: "reflection_draft_unique")
   @@index([clientId], map: "reflection_drafts_client_idx")
   @@map("reflection_drafts")
 }
 
-model SentLetter {
-  id            String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  activityId    String           @map("activity_id") @db.Uuid
-  appointmentId String           @map("appointment_id") @db.Uuid
-  clientId      String           @map("client_id")
-  therapistId   String           @map("therapist_id")
-  approvedBody  String           @map("approved_body")
-  sourceVersion Int              @map("source_version")
-  policyVersion String           @map("policy_version")
-  sentAt        DateTime         @default(now()) @map("sent_at") @db.Timestamptz(6)
-  idempotency   SendIdempotency?
+model DraftAnswer {
+  id         String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  draftId    String @map("draft_id") @db.Uuid
+  activityId String @map("activity_id") @db.Uuid
+  questionId String @map("question_id") @db.Uuid
+  text       String @default("")
 
-  activity  Activity @relation(fields: [activityId, appointmentId], references: [id, appointmentId])
-  client    User     @relation("ClientLetters", fields: [clientId], references: [id])
-  therapist User     @relation("TherapistLetters", fields: [therapistId], references: [id])
+  draft    ReflectionDraft  @relation(fields: [draftId, activityId], references: [id, activityId], onDelete: Cascade)
+  question ActivityQuestion @relation(fields: [questionId, activityId], references: [id, activityId])
+
+  @@unique([draftId, questionId])
+  @@map("draft_answers")
+}
+
+model SentLetter {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  activityId        String   @map("activity_id") @db.Uuid
+  appointmentId     String   @map("appointment_id") @db.Uuid
+  clientId          String   @map("client_id")
+  therapistId       String   @map("therapist_id")
+  therapistClientId String   @map("therapist_client_id") @db.Uuid
+  approvedBody      String   @map("approved_body")
+  sourceVersion     Int      @map("source_version")
+  policyVersion     String   @map("policy_version")
+  sentAt            DateTime @default(now()) @map("sent_at") @db.Timestamptz(6)
+
+  idempotency SendIdempotency?
+
+  activity             Activity        @relation(fields: [activityId, appointmentId], references: [id, appointmentId])
+  activityRelationship Activity        @relation("LetterActivityRelationship", fields: [activityId, therapistClientId], references: [id, therapistClientId])
+  relationship         TherapistClient @relation(fields: [therapistClientId, clientId, therapistId], references: [id, clientId, therapistId])
+  client               User            @relation("ClientLetters", fields: [clientId], references: [id])
+  therapist            User            @relation("TherapistLetters", fields: [therapistId], references: [id])
 
   @@index([therapistId, sentAt(sort: Desc), id], map: "sent_letters_therapist_sent_idx")
   @@index([clientId], map: "sent_letters_client_idx")

@@ -112,7 +112,7 @@ CREATE TABLE "reflection_drafts" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "activity_id" UUID NOT NULL,
     "client_id" TEXT NOT NULL,
-    "responses" JSONB NOT NULL DEFAULT '[]',
+    "therapist_client_id" UUID NOT NULL,
     "private_writing" TEXT NOT NULL DEFAULT '',
     "summary_draft" TEXT NOT NULL DEFAULT '',
     "summary_origin" TEXT NOT NULL DEFAULT 'manual',
@@ -123,12 +123,24 @@ CREATE TABLE "reflection_drafts" (
 );
 
 -- CreateTable
+CREATE TABLE "draft_answers" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "draft_id" UUID NOT NULL,
+    "activity_id" UUID NOT NULL,
+    "question_id" UUID NOT NULL,
+    "text" TEXT NOT NULL DEFAULT '',
+
+    CONSTRAINT "draft_answers_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "sent_letters" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "activity_id" UUID NOT NULL,
     "appointment_id" UUID NOT NULL,
     "client_id" TEXT NOT NULL,
     "therapist_id" TEXT NOT NULL,
+    "therapist_client_id" UUID NOT NULL,
     "approved_body" TEXT NOT NULL,
     "source_version" INTEGER NOT NULL,
     "policy_version" TEXT NOT NULL,
@@ -172,6 +184,12 @@ CREATE INDEX "therapist_clients_client_id_idx" ON "therapist_clients"("client_id
 CREATE UNIQUE INDEX "therapist_clients_therapist_id_client_id_key" ON "therapist_clients"("therapist_id", "client_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "therapist_clients_id_client_id_key" ON "therapist_clients"("id", "client_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "therapist_clients_id_client_id_therapist_id_key" ON "therapist_clients"("id", "client_id", "therapist_id");
+
+-- CreateIndex
 CREATE INDEX "appointments_relationship_start_idx" ON "appointments"("therapist_client_id", "starts_at");
 
 -- CreateIndex
@@ -187,16 +205,25 @@ CREATE INDEX "activities_appointment_idx" ON "activities"("appointment_id");
 CREATE UNIQUE INDEX "activities_id_appointment_id_key" ON "activities"("id", "appointment_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "activity_question_position_unique" ON "activity_questions"("activity_id", "position");
+CREATE UNIQUE INDEX "activities_id_therapist_client_id_key" ON "activities"("id", "therapist_client_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "activity_questions_id_activity_id_key" ON "activity_questions"("id", "activity_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "activity_question_position_unique" ON "activity_questions"("activity_id", "position");
+
+-- CreateIndex
 CREATE INDEX "reflection_drafts_client_idx" ON "reflection_drafts"("client_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "reflection_drafts_id_activity_id_key" ON "reflection_drafts"("id", "activity_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "reflection_draft_unique" ON "reflection_drafts"("activity_id", "client_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "draft_answers_draft_id_question_id_key" ON "draft_answers"("draft_id", "question_id");
 
 -- CreateIndex
 CREATE INDEX "sent_letters_therapist_sent_idx" ON "sent_letters"("therapist_id", "sent_at" DESC, "id");
@@ -235,13 +262,28 @@ ALTER TABLE "activities" ADD CONSTRAINT "activities_appointment_id_therapist_cli
 ALTER TABLE "activity_questions" ADD CONSTRAINT "activity_questions_activity_id_fkey" FOREIGN KEY ("activity_id") REFERENCES "activities"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "reflection_drafts" ADD CONSTRAINT "reflection_drafts_activity_id_fkey" FOREIGN KEY ("activity_id") REFERENCES "activities"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "reflection_drafts" ADD CONSTRAINT "reflection_drafts_activity_id_therapist_client_id_fkey" FOREIGN KEY ("activity_id", "therapist_client_id") REFERENCES "activities"("id", "therapist_client_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "reflection_drafts" ADD CONSTRAINT "reflection_drafts_therapist_client_id_client_id_fkey" FOREIGN KEY ("therapist_client_id", "client_id") REFERENCES "therapist_clients"("id", "client_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "reflection_drafts" ADD CONSTRAINT "reflection_drafts_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "draft_answers" ADD CONSTRAINT "draft_answers_draft_id_activity_id_fkey" FOREIGN KEY ("draft_id", "activity_id") REFERENCES "reflection_drafts"("id", "activity_id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "draft_answers" ADD CONSTRAINT "draft_answers_question_id_activity_id_fkey" FOREIGN KEY ("question_id", "activity_id") REFERENCES "activity_questions"("id", "activity_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "sent_letters" ADD CONSTRAINT "sent_letters_activity_id_appointment_id_fkey" FOREIGN KEY ("activity_id", "appointment_id") REFERENCES "activities"("id", "appointment_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "sent_letters" ADD CONSTRAINT "sent_letters_activity_id_therapist_client_id_fkey" FOREIGN KEY ("activity_id", "therapist_client_id") REFERENCES "activities"("id", "therapist_client_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "sent_letters" ADD CONSTRAINT "sent_letters_therapist_client_id_client_id_therapist_id_fkey" FOREIGN KEY ("therapist_client_id", "client_id", "therapist_id") REFERENCES "therapist_clients"("id", "client_id", "therapist_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "sent_letters" ADD CONSTRAINT "sent_letters_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -255,6 +297,26 @@ ALTER TABLE "send_idempotency" ADD CONSTRAINT "send_idempotency_actor_id_fkey" F
 -- AddForeignKey
 ALTER TABLE "send_idempotency" ADD CONSTRAINT "send_idempotency_letter_id_fkey" FOREIGN KEY ("letter_id") REFERENCES "sent_letters"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
+-- Enforce allowed user roles
+ALTER TABLE "user"
+  ADD CONSTRAINT "user_role_check"
+  CHECK ("role" IN ('client', 'therapist'));
+
+-- Enforce allowed appointment statuses
+ALTER TABLE "appointments"
+  ADD CONSTRAINT "appointments_status_check"
+  CHECK ("status" IN ('scheduled', 'canceled'));
+
+-- Enforce allowed therapist-client statuses
+ALTER TABLE "therapist_clients"
+  ADD CONSTRAINT "therapist_clients_status_check"
+  CHECK ("status" IN ('active', 'inactive'));
+
+-- Enforce allowed summary origins
+ALTER TABLE "reflection_drafts"
+  ADD CONSTRAINT "reflection_drafts_summary_origin_check"
+  CHECK ("summary_origin" IN ('manual', 'ai-edited'));
+
 -- Prevent sent letters from being modified or deleted
 CREATE OR REPLACE FUNCTION prevent_sent_letter_changes()
 RETURNS TRIGGER AS $$
@@ -264,6 +326,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER sent_letters_immutable
-BEFORE UPDATE OR DELETE ON sent_letters
+BEFORE UPDATE OR DELETE ON "sent_letters"
 FOR EACH ROW
 EXECUTE FUNCTION prevent_sent_letter_changes();
