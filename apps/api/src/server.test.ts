@@ -3,7 +3,9 @@ import type { AddressInfo } from "node:net";
 import { after, before, test } from "node:test";
 import { createApiServer } from "./server.js";
 
-const server = createApiServer();
+const server = createApiServer((_req, res) => {
+  res.status(503).json({ error: "Auth unavailable in tests" });
+});
 let baseUrl: string;
 
 before(async () => {

@@ -1,8 +1,4 @@
-npx prisma validate --config apps/api/prisma7.config.tsnode_modules
-# Keep environment variables out of version control
+node_modules/
+dist/
 .env
-
-/src/generated/prisma
-
-# Generated Prisma client
-src/generated/
+src/generated/prisma/

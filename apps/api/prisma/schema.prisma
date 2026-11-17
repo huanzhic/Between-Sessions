@@ -216,6 +216,7 @@ model SentLetter {
   client               User            @relation("ClientLetters", fields: [clientId], references: [id])
   therapist            User            @relation("TherapistLetters", fields: [therapistId], references: [id])
 
+  @@unique([id, activityId])
   @@index([therapistId, sentAt(sort: Desc), id], map: "sent_letters_therapist_sent_idx")
   @@index([clientId], map: "sent_letters_client_idx")
   @@map("sent_letters")
@@ -231,8 +232,9 @@ model SendIdempotency {
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   actor  User       @relation(fields: [actorId], references: [id])
-  letter SentLetter @relation(fields: [letterId], references: [id])
+  letter SentLetter @relation(fields: [letterId, activityId], references: [id, activityId])
 
   @@unique([actorId, activityId, key])
+  @@unique([letterId, activityId])
   @@map("send_idempotency")
 }

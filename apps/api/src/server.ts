@@ -1,23 +1,11 @@
 import express from "express";
 import { createServer } from "node:http";
+import type { RequestHandler } from "express";
 
-export function createApiServer() {
+export function createApiServer(authHandler: RequestHandler) {
   const app = express();
 
-  // Load Better Auth only when an authentication request is made
-  app.all("/api/auth/*path", async (req, res) => {
-    try {
-      const { auth } = await import("./lib/auth.js");
-      const { toNodeHandler } = await import("better-auth/node");
-
-      return toNodeHandler(auth)(req, res);
-    } catch (error) {
-      console.error("Authentication initialization failed:", error);
-      if (!res.headersSent) {
-        res.status(500).json({ error: "Authentication unavailable" });
-      }
-    }
-  });
+  app.all("/auth/*path", authHandler);
 
   app.use(express.json());
 
