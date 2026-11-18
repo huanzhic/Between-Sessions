@@ -216,6 +216,23 @@ Backend A and Backend B must coordinate on:
 
 Frontend role switching is not a substitute for server-side authorization.
 
+### Session and authorization helpers (Backend B)
+
+Items 1 and 2 above now have shared helpers in `apps/api/src/auth/`. Items 3–6 are enforced per route as the workflow endpoints are built.
+
+| Helper | What it does |
+|---|---|
+| `betterAuthResolver(auth)` (`session.ts`) | Reads the Better Auth session from the request cookie and returns `{ id, role, displayName }`, or `null`. A missing or unknown role is treated as signed out. Email and tokens are never passed on. |
+| `requireUser(resolve)` (`middleware.ts`) | Returns 401 `unauthenticated` when nobody is signed in; otherwise stores the user for the route. |
+| `requireRole("client" \| "therapist")` | Returns 403 `forbidden` for the wrong role. Use after `requireUser`. |
+| `currentUser(res)` | Gets the signed-in user inside a route; throws if the route forgot `requireUser`. |
+| `sameOriginWrites([WEB_ORIGIN])` | Rejects browser writes from other sites (403 `bad-origin`). Workflow routers mount it; it is not global yet. |
+| `prismaLinks(prisma).findActiveLink(therapistId, clientId)` (`links.ts`) | Returns the active `TherapistClient` link or `null`. `inMemoryLinks` is a test fake. |
+
+`GET /auth/session` returns the contract's minimal `SessionView` (`{ user: { id, role, displayName } }`) or 401. All errors use the contract's `ApiError` shape with a `requestId` that matches the `X-Request-Id` header.
+
+New accounts are always created with role `client` (`input: false`), so a therapist account currently has to be set directly in the database. Seed data should create the fictional therapist.
+
 ## Database Constraints
 
 The PostgreSQL migration includes primary keys, foreign keys, composite foreign keys, unique constraints, and indexes.

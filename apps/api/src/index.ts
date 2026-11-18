@@ -9,10 +9,13 @@ for (const name of ["DATABASE_URL", "BETTER_AUTH_SECRET", "BETTER_AUTH_URL", "WE
 
 const { auth } = await import("./lib/auth.js");
 const { toNodeHandler } = await import("better-auth/node");
+const { betterAuthResolver } = await import("./auth/session.js");
 
 const port = Number(process.env.PORT ?? 3000);
 
-const server = createApiServer(toNodeHandler(auth));
+const server = createApiServer(toNodeHandler(auth), {
+  resolveSession: betterAuthResolver(auth),
+});
 
 server.listen(port, () => {
   console.log(`API listening on port ${port}`);
