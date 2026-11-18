@@ -7,6 +7,6 @@ export default defineConfig({
       command: "node ../../node_modules/vite/bin/vite.js --host 127.0.0.1",
       port: 5173,
     },
-    { command: "node --import tsx ../api/src/index.ts", port: 3000 },
+    { command: "node --import tsx ../api/src/health-server.ts", port: 3000 },
   ],
 });

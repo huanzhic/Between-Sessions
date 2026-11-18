@@ -1,14 +1,17 @@
+import express from "express";
 import { createServer } from "node:http";
+import type { RequestHandler } from "express";
 
-// Placeholder server; the web framework is not chosen yet.
-export function createApiServer() {
-  return createServer((req, res) => {
-    if (req.url === "/health") {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ status: "ok" }));
-      return;
-    }
-    res.writeHead(404);
-    res.end();
+export function createApiServer(authHandler: RequestHandler) {
+  const app = express();
+
+  app.all("/auth/*path", authHandler);
+
+  app.use(express.json());
+
+  app.get("/health", (_req, res) => {
+    res.json({ status: "ok" });
   });
+
+  return createServer(app);
 }
