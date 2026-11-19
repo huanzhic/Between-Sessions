@@ -36,3 +36,35 @@ test("unknown paths return 404 in ApiError shape", async () => {
   assert.equal(body.error.code, "not-found");
   assert.equal(body.error.message, "Endpoint not found.");
 });
+
+test("authentication routes reach the auth handler", async () => {
+  const res = await fetch(`${baseUrl}/auth/sign-in/email`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  });
+
+  assert.equal(res.status, 503);
+  assert.deepEqual(await res.json(), {
+    error: "Auth unavailable in tests",
+  });
+});
+
+test("unknown write paths return 404 in ApiError shape", async () => {
+  const res = await fetch(`${baseUrl}/nope`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  });
+
+  assert.equal(res.status, 404);
+
+  const body = ApiError.parse(await res.json());
+
+  assert.equal(body.error.code, "not-found");
+  assert.equal(body.error.message, "Endpoint not found.");
+});

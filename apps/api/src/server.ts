@@ -47,22 +47,22 @@ export function createApiServer(
   }
 
   app.use((_req, res) => {
-  return sendError(
-    res, 404, "not-found", "Endpoint not found.",
-  );
-});
+    return sendError(
+      res, 404, "not-found", "Endpoint not found.",
+    );
+  });
 
   const onError: ErrorRequestHandler = (err, _req, res, next) => {
-  if (res.headersSent) {
-    return next(err);
-  }
-    if (err.type === "entity.parse.failed") {
+    if (res.headersSent) {
+      return next(err);
+    }
+    if (err?.type === "entity.parse.failed") {
       return sendError(
         res, 400, "invalid-json", "Invalid JSON body.",
       );
     }
 
-    if (err.type === "entity.too.large") {
+    if (err?.type === "entity.too.large") {
       return sendError(
         res, 413, "payload-too-large", "Request body is too large.",
       );

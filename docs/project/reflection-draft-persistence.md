@@ -16,7 +16,7 @@ No schema changes or database migrations are required. Frontend integration rema
 | `apps/api/src/drafts/routes.test.ts` | HTTP route tests with mocked sessions and repository |
 | `apps/api/src/index.ts` | Production repository and session resolver wiring |
 | `apps/api/src/server.ts` | Route registration and error handling |
-| `apps/api/src/server.test.ts` | Server health and standardized 404 error response tests |
+| `apps/api/src/server.test.ts` | Server health, authentication route delegation, and standardized GET/POST 404 response tests |
 
 ## API Endpoints
 
@@ -65,6 +65,10 @@ database transaction. A PostgreSQL FOR SHARE lock protects the active
 therapist-client relationship against concurrent deactivation during
 saving. Responses use the private draft DTO rather than exposing raw
 database records.
+The save transaction locks the active therapist-client relationship
+before creating or updating the draft. Future workflow operations
+that lock both relationship and draft records should follow the same
+lock ordering to reduce the risk of deadlocks.
 
 The route requires a client session, rejects unauthorized write origins
 and requests carrying cookies without an Origin header before JSON
@@ -84,7 +88,15 @@ is 1 MB; shared contract field limits also apply.
 
 Draft route errors use the shared `ApiError` shape with a request ID.
 Unknown API paths return a standardized 404 ApiError response.
-JSON parsing is configured at the route level.
+JSON parsing is configured at the route level. The server no longer
+uses a global JSON parser.
+
+New workflow endpoints that accept JSON bodies must register their
+own JSON parsing middleware after authentication and applicable
+origin checks, and before request body validation.
+
+The Better Auth handler remains responsible for parsing its own
+authentication requests.
 
 ## Frontend Integration Handoff
 
@@ -102,15 +114,17 @@ Through the local Vite proxy, use `/api/activities/:id/reflection` for GET and P
 |---|---|
 | TypeScript (all workspaces) | Passed |
 | Contract tests | 7 passed |
-| API tests | 41 passed; 1 opt-in database test skipped in default run |
+| API tests | 48 passed; 1 opt-in database test skipped in default run |
 | Frontend tests | 3 passed |
-| HTTP draft route tests (included in API total) | 18 passed |
-| Total default tests | 51 passed, 1 skipped, 0 failed |
-| PostgreSQL integration test | Passed in separate opt-in run |
+| HTTP draft route tests (included in API total) | 23 passed |
+| Server tests (included in API total) | 4 passed |
+| Total default tests | 58 passed, 1 skipped, 0 failed |
+| PostgreSQL integration test | 15 scenarios passed in separate opt-in run |
 | Concurrent draft creation and editing | Passed |
 | Concurrent deactivation (deactivation acquires lock first) | Passed |
 | Git diff validation | Passed |
 | Production build (all workspaces) | Passed |
+| Playwright browser tests | 12 passed |
 
 ## Known Limitations
 

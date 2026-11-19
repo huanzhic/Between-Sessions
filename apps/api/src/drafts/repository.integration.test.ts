@@ -23,7 +23,10 @@ test(
     const relationshipId = randomUUID();
     const appointmentId = randomUUID();
     const activityId = randomUUID();
-    const questionId = randomUUID();
+    const [questionId, secondQuestionId] = [
+      randomUUID(),
+      randomUUID(),
+    ].sort();
 
     try {
       await prisma.user.createMany({
@@ -76,18 +79,30 @@ test(
         },
       });
 
-      await prisma.activityQuestion.create({
-        data: {
-          id: questionId,
-          activityId,
-          prompt: "How was your day?",
-          position: 1,
-        },
+      await prisma.activityQuestion.createMany({
+        data: [
+          {
+            id: questionId,
+            activityId,
+            prompt: "How was your day?",
+            position: 1,
+          },
+          {
+            id: secondQuestionId,
+            activityId,
+            prompt: "How did you feel?",
+            position: 2,
+          },
+        ],
       });
 
       const input = {
         expectedVersion: 0,
         answers: [
+          {
+            questionId: secondQuestionId,
+            text: "My second answer.",
+          },
           {
             questionId,
             text: "My original answer.",
@@ -130,6 +145,18 @@ test(
 
       assert.equal(created.version, 1);
       assert.equal(created.summary.text, "My original letter.");
+      assert.deepEqual(created.answers, [
+        {
+          questionId,
+          text: "My original answer.",
+        },
+        {
+          questionId: secondQuestionId,
+          text: "My second answer.",
+        },
+      ]);
+
+
       // Test 3: Retrieve the saved draft.
       const retrieved = await repository.getDraft(
         activityId,
@@ -161,7 +188,12 @@ test(
 
       assert.equal(edited.version, 2);
       assert.equal(edited.summary.text, "My edited letter.");
-      assert.equal(edited.answers[0]?.text, "My edited answer.");
+      assert.deepEqual(edited.answers, [
+        {
+          questionId,
+          text: "My edited answer.",
+        },
+      ]);
       assert.equal(
         edited.privateWriting,
         "Updated private writing.",
@@ -297,25 +329,29 @@ test(
         latest,
       );
       // Test 14: Reject a save overlapping relationship deactivation.
-      const overlappingSave = await prisma.$transaction(async (tx) => {
-        await tx.therapistClient.update({
-          where: { id: relationshipId },
-          data: { status: "inactive" },
-        });
+      let pendingSave: Promise<unknown> | undefined;
+      try {
 
-        const saveResult = repository.saveDraft(activityId, clientId, {
-          ...input,
-          expectedVersion: 3,
-        }).then(
-          (value) => ({ success: true as const, value }),
-          (error: unknown) => ({ success: false as const, error }),
-        );
+        const overlappingSave = await prisma.$transaction(async (tx) => {
+          await tx.therapistClient.update({
+            where: { id: relationshipId },
+            data: { status: "inactive" },
+          });
 
-        const deadline = Date.now() + 2000;
-        let blocked = false;
+          const saveResult = repository.saveDraft(activityId, clientId, {
+            ...input,
+            expectedVersion: 3,
+          }).then(
+            (value) => ({ success: true as const, value }),
+            (error: unknown) => ({ success: false as const, error }),
+          );
+          pendingSave = saveResult;
 
-        while (Date.now() < deadline) {
-          const [result] = await tx.$queryRaw<{ blocked: boolean }[]>`
+          const deadline = Date.now() + 2000;
+          let blocked = false;
+
+          while (Date.now() < deadline) {
+            const [result] = await tx.$queryRaw<{ blocked: boolean }[]>`
         SELECT EXISTS (
             SELECT 1
             FROM pg_locks
@@ -325,25 +361,28 @@ test(
         ) AS blocked
     `;
 
-          if (result?.blocked) {
-            blocked = true;
-            break;
+            if (result?.blocked) {
+              blocked = true;
+              break;
+            }
+
+            await delay(25);
           }
 
-          await delay(25);
+          assert.ok(blocked, "Expected save to wait for the relationship lock");
+
+          return { saveResult };
+        }, { timeout: 10000 });
+        const outcome = await overlappingSave.saveResult;
+
+        assert.equal(outcome.success, false);
+
+        if (!outcome.success) {
+          assert.ok(outcome.error instanceof DraftRepositoryError);
+          assert.equal(outcome.error.code, "ACTIVITY_NOT_FOUND");
         }
-
-        assert.ok(blocked, "Expected save to wait for the relationship lock");
-
-        return { saveResult };
-      }, { timeout: 10000 });
-      const outcome = await overlappingSave.saveResult;
-
-      assert.equal(outcome.success, false);
-
-      if (!outcome.success) {
-        assert.ok(outcome.error instanceof DraftRepositoryError);
-        assert.equal(outcome.error.code, "ACTIVITY_NOT_FOUND");
+      } finally {
+        await pendingSave;
       }
 
       await prisma.therapistClient.update({
@@ -355,7 +394,22 @@ test(
         await repository.getDraft(activityId, clientId),
         latest,
       );
-    } finally {
+      // Test 15: Verify all answers can be removed.
+      const cleared = await repository.saveDraft(activityId, clientId, {
+        ...input,
+        expectedVersion: 3,
+        answers: [],
+      });
+
+      assert.equal(cleared.version, 4);
+      assert.deepEqual(cleared.answers, []);
+
+      assert.deepEqual(
+        await repository.getDraft(activityId, clientId),
+        cleared,
+      );
+    }
+    finally {
       try {
         await prisma.draftAnswer.deleteMany({
           where: { activityId },

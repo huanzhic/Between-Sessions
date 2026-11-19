@@ -67,13 +67,14 @@ export function createDraftRepository(prisma: PrismaClient) {
         version: true,
         updatedAt: true,
         answers: {
+          orderBy: { questionId: "asc" },
           select: {
             questionId: true,
             text: true,
           },
         },
       },
-    });
+      });
 
     if (!draft) {
       return null;
@@ -218,6 +219,7 @@ export function createDraftRepository(prisma: PrismaClient) {
         where: { id: draftId },
         include: {
           answers: {
+            orderBy: { questionId: "asc" },
             select: {
               questionId: true,
               text: true,
