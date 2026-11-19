@@ -10,6 +10,6 @@
     "dev:api": "npm run dev --workspace apps/api",
     "build": "npm run build --workspaces",
     "typecheck": "npm run typecheck --workspaces",
-    "test": "npm run test --workspaces"
+    "test": "npm run build --workspace packages/contracts && npm run test --workspaces"
   }
 }
