@@ -73,6 +73,15 @@ test("GET /auth/session returns exactly the minimal SessionView", async () => {
   assert.deepEqual(await res.json(), { user: maya });
 });
 
+test("GET /auth/session is never cached, signed in or out", async () => {
+  for (const user of [maya, null]) {
+    signedIn = user;
+    const res = await fetch(`${baseUrl}/auth/session`);
+    assert.equal(res.headers.get("cache-control"), "no-store");
+    assert.equal(res.headers.get("pragma"), "no-cache");
+  }
+});
+
 test("a failing session lookup returns a generic 500 without internal details", async () => {
   throwFromResolver = true;
   try {

@@ -12,6 +12,15 @@ export function requestId(): RequestHandler {
   };
 }
 
+// Identity responses must not be kept by browser or proxy caches across sign-in changes.
+export function noStore(): RequestHandler {
+  return (_req, res, next) => {
+    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("Pragma", "no-cache");
+    next();
+  };
+}
+
 export function requireUser(resolve: SessionResolver): RequestHandler {
   return async (req, res, next) => {
     const user = await resolve(req);

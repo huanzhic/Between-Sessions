@@ -229,7 +229,17 @@ Items 1 and 2 above now have shared helpers in `apps/api/src/auth/`. Items 3–6
 | `sameOriginWrites([WEB_ORIGIN])` | Rejects browser writes from other sites (403 `bad-origin`). Workflow routers mount it; it is not global yet. |
 | `prismaLinks(prisma).findActiveLink(therapistId, clientId)` (`links.ts`) | Returns the active `TherapistClient` link or `null`. `inMemoryLinks` is a test fake. |
 
-`GET /auth/session` returns the contract's minimal `SessionView` (`{ user: { id, role, displayName } }`) or 401. All errors use the contract's `ApiError` shape with a `requestId` that matches the `X-Request-Id` header.
+`GET /auth/session` returns the contract's minimal `SessionView` (`{ user: { id, role, displayName } }`) or 401, with `Cache-Control: no-store` on both.
+
+Errors from API routes (including `GET /auth/session`, unknown paths, malformed or oversized JSON, and unexpected failures) use the contract's `ApiError` shape with a `requestId` that matches the `X-Request-Id` header. Better Auth's own `/auth/*` endpoints (sign-up, sign-in, sign-out) keep Better Auth's `{ message, code }` error format, which the Better Auth client expects.
+
+Agreed status codes for workflow routes:
+
+| Status | When |
+|---|---|
+| 401 `unauthenticated` | Nobody is signed in, or the session has expired. |
+| 403 `forbidden` | Signed in with the wrong role for the route. |
+| 404 `not-found` | The resource does not exist **or** belongs to someone the user is not actively linked to. Both cases return the same response, so IDs cannot be probed. |
 
 New accounts are always created with role `client` (`input: false`), so a therapist account currently has to be set directly in the database. Seed data should create the fictional therapist.
 
