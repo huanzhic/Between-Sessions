@@ -12,9 +12,15 @@ const { toNodeHandler } = await import("better-auth/node");
 const { betterAuthResolver } = await import("./auth/session.js");
 
 const port = Number(process.env.PORT ?? 3000);
+const { prisma } = await import("./lib/prisma.js");
+const { createDraftRepository } = await import(
+  "./drafts/repository.js"
+);
 
 const server = createApiServer(toNodeHandler(auth), {
   resolveSession: betterAuthResolver(auth),
+  draftRepository: createDraftRepository(prisma),
+  allowedOrigins: [process.env.WEB_ORIGIN!],
 });
 
 server.listen(port, () => {

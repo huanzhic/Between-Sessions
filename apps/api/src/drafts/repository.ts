@@ -119,17 +119,32 @@ export function createDraftRepository(prisma: PrismaClient) {
         throw new Error("STALE_DRAFT");
       }
 
-      const created = await tx.reflectionDraft.create({
-        data: {
-          activityId,
-          clientId,
-          therapistClientId: activity.therapistClientId,
-          ...data,
-          version: 1,
-        },
-      });
+      const created = await tx.reflectionDraft.createMany({
+  data: {
+    activityId,
+    clientId,
+    therapistClientId: activity.therapistClientId,
+    ...data,
+    version: 1,
+  },
+  skipDuplicates: true,
+});
 
-      draftId = created.id;
+if (created.count !== 1) {
+  throw new Error("STALE_DRAFT");
+}
+
+const newDraft = await tx.reflectionDraft.findUniqueOrThrow({
+  where: {
+    activityId_clientId: {
+      activityId,
+      clientId,
+    },
+  },
+  select: { id: true },
+});
+
+draftId = newDraft.id;
     } else {
       const updated = await tx.reflectionDraft.updateMany({
         where: {
