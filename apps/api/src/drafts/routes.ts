@@ -8,7 +8,10 @@ import {
 } from "../auth/middleware.js";
 import type { SessionResolver } from "../auth/session.js";
 import { sendError } from "../http/errors.js";
-import type { createDraftRepository } from "./repository.js";
+import {
+  DraftRepositoryError,
+  type createDraftRepository,
+} from "./repository.js";
 
 type DraftRepository = ReturnType<typeof createDraftRepository>;
 
@@ -23,9 +26,9 @@ export function createDraftRoutes(
   const router = Router();
 
   router.use("/activities/:id/reflection", (_req, res, next) => {
-  res.setHeader("Cache-Control", "no-store");
-  next();
-});
+    res.setHeader("Cache-Control", "no-store");
+    next();
+  });
 
   router.get(
     "/activities/:id/reflection",
@@ -64,19 +67,19 @@ export function createDraftRoutes(
     requireUser(resolveSession),
     requireRole("client"),
     sameOriginWrites(allowedOrigins),
-json({ limit: "1mb" }),
-async (req, res) => {
-      const activityId = req.params.id;
-      const clientId = currentUser(res).id;
-
-      if (
-        req.headers.cookie &&
-        !req.headers.origin
-      ) {
+    (req, res, next) => {
+      if (req.headers.cookie && !req.headers.origin) {
         return sendError(
           res, 403, "bad-origin", "Origin is required.",
         );
       }
+
+      next();
+    },
+    json({ limit: "1mb" }),
+    async (req, res) => {
+      const activityId = req.params.id;
+      const clientId = currentUser(res).id;
 
       if (
 
@@ -107,8 +110,8 @@ async (req, res) => {
 
         res.json(draft);
       } catch (error) {
-        if (error instanceof Error) {
-          switch (error.message) {
+        if (error instanceof DraftRepositoryError) {
+          switch (error.code) {
             case "ACTIVITY_NOT_FOUND":
               return sendError(
                 res, 404, "not-found", "Activity not found.",

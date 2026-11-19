@@ -3,7 +3,10 @@ import type { AddressInfo } from "node:net";
 import { after, before, test } from "node:test";
 import { PrivateDraft, ApiError } from "@between-sessions/contracts";
 import { createApiServer } from "../server.js";
-import type { createDraftRepository } from "./repository.js";
+import {
+  DraftRepositoryError,
+  type createDraftRepository,
+} from "./repository.js";
 
 const activityId = "11111111-1111-4111-8111-111111111111";
 const questionId = "22222222-2222-4222-8222-222222222222";
@@ -42,15 +45,15 @@ const repository: ReturnType<typeof createDraftRepository> = {
 
   async saveDraft(id, clientId, body) {
     if (id !== activityId || clientId !== "client-1") {
-      throw new Error("ACTIVITY_NOT_FOUND");
+      throw new DraftRepositoryError("ACTIVITY_NOT_FOUND");
     }
 
     if (body.expectedVersion !== 1) {
-      throw new Error("STALE_DRAFT");
+      throw new DraftRepositoryError("STALE_DRAFT");
     }
 
     if (body.answers.some(answer => answer.questionId !== questionId)) {
-      throw new Error("INVALID_QUESTION");
+      throw new DraftRepositoryError("INVALID_QUESTION");
     }
 
     return {
@@ -108,9 +111,8 @@ before(async () => {
     server.listen(0, "127.0.0.1", resolve),
   );
 
-  baseUrl = `http://127.0.0.1:${
-    (server.address() as AddressInfo).port
-  }/activities/${activityId}/reflection`;
+  baseUrl = `http://127.0.0.1:${(server.address() as AddressInfo).port
+    }/activities/${activityId}/reflection`;
 });
 
 after(async () => {
@@ -149,12 +151,17 @@ test("client can edit their draft", async () => {
   const res = await save();
 
   assert.equal(res.status, 200);
+  assert.equal(res.headers.get("cache-control"), "no-store");
 
   const body = PrivateDraft.parse(await res.json());
 
   assert.equal(body.version, 2);
   assert.equal(body.summary.text, "Updated letter");
   assert.equal(body.privateWriting, "Updated private writing");
+
+  assert.equal(body.activityId, activityId);
+  assert.deepEqual(body.answers, input.answers);
+  assert.equal(body.summary.origin, input.summary.origin);
 });
 
 test("unauthenticated reads return 401", async () => {
@@ -221,6 +228,24 @@ test("cookie writes without Origin are rejected", async () => {
   assert.equal(res.status, 403);
 });
 
+test("missing Origin is rejected before JSON parsing", async () => {
+  const res = await fetch(baseUrl, {
+    method: "PUT",
+    headers: {
+      Authorization: "client",
+      Cookie: "session=test",
+      "Content-Type": "application/json",
+    },
+    body: '{"broken":',
+  });
+
+  assert.equal(res.status, 403);
+
+  const body = ApiError.parse(await res.json());
+
+  assert.equal(body.error.code, "bad-origin");
+});
+
 test("outdated draft versions return 409", async () => {
   const res = await save({
     ...input,
@@ -228,18 +253,26 @@ test("outdated draft versions return 409", async () => {
   });
 
   assert.equal(res.status, 409);
+
+  const body = ApiError.parse(await res.json());
+
+  assert.equal(body.error.code, "stale-draft");
 });
 
-test("invalid question IDs return 400", async () => {
+test("unknown activity questions return 400", async () => {
   const res = await save({
     ...input,
     answers: [{
-      questionId: "invalid-question",
+      questionId: "33333333-3333-4333-8333-333333333333",
       text: "Invalid answer",
     }],
   });
 
   assert.equal(res.status, 400);
+
+  const body = ApiError.parse(await res.json());
+
+  assert.equal(body.error.code, "invalid-question");
 });
 
 test("invalid request bodies return 400", async () => {

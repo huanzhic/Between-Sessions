@@ -46,9 +46,16 @@ export function createApiServer(
     );
   }
 
-  app.use(express.json());
+  app.use((_req, res) => {
+  return sendError(
+    res, 404, "not-found", "Endpoint not found.",
+  );
+});
 
-  const onError: ErrorRequestHandler = (err, _req, res, _next) => {
+  const onError: ErrorRequestHandler = (err, _req, res, next) => {
+  if (res.headersSent) {
+    return next(err);
+  }
     if (err.type === "entity.parse.failed") {
       return sendError(
         res, 400, "invalid-json", "Invalid JSON body.",

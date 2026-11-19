@@ -16,6 +16,7 @@ No schema changes or database migrations are required. Frontend integration rema
 | `apps/api/src/drafts/routes.test.ts` | HTTP route tests with mocked sessions and repository |
 | `apps/api/src/index.ts` | Production repository and session resolver wiring |
 | `apps/api/src/server.ts` | Route registration and error handling |
+| `apps/api/src/server.test.ts` | Server health and standardized 404 error response tests |
 
 ## API Endpoints
 
@@ -58,9 +59,17 @@ The question ID above is illustrative; use a real question ID belonging to the a
 
 ## Authorization and Validation
 
-The repository validates activity ownership, active relationships, and question membership. Draft changes and answer replacement occur in one database transaction. Responses use the private draft DTO rather than exposing raw database records.
+The repository validates activity ownership, active relationships, and
+question membership. Draft changes and answer replacement occur in one
+database transaction. A PostgreSQL FOR SHARE lock protects the active
+therapist-client relationship against concurrent deactivation during
+saving. Responses use the private draft DTO rather than exposing raw
+database records.
 
-The route requires a client session, rejects unauthorized write origins and cookie-authenticated writes without an Origin, and applies `Cache-Control: no-store`. The request body limit is 1 MB; shared contract field limits also apply.
+The route requires a client session, rejects unauthorized write origins
+and requests carrying cookies without an Origin header before JSON
+parsing, and applies `Cache-Control: no-store`. The request body limit
+is 1 MB; shared contract field limits also apply.
 
 | Status | Meaning |
 |---|---|
@@ -74,6 +83,8 @@ The route requires a client session, rejects unauthorized write origins and cook
 | 500 | Generic internal error |
 
 Draft route errors use the shared `ApiError` shape with a request ID.
+Unknown API paths return a standardized 404 ApiError response.
+JSON parsing is configured at the route level.
 
 ## Frontend Integration Handoff
 
@@ -91,14 +102,24 @@ Through the local Vite proxy, use `/api/activities/:id/reflection` for GET and P
 |---|---|
 | TypeScript (all workspaces) | Passed |
 | Contract tests | 7 passed |
-| API tests | 40 passed; 1 opt-in database test skipped in default run |
+| API tests | 41 passed; 1 opt-in database test skipped in default run |
 | Frontend tests | 3 passed |
-| New HTTP route tests (included in API total) | 17 passed |
-| PostgreSQL integration test | Passed in separate opt-in run
+| HTTP draft route tests (included in API total) | 18 passed |
+| Total default tests | 51 passed, 1 skipped, 0 failed |
+| PostgreSQL integration test | Passed in separate opt-in run |
+| Concurrent draft creation and editing | Passed |
+| Concurrent deactivation (deactivation acquires lock first) | Passed |
+| Git diff validation | Passed |
 | Production build (all workspaces) | Passed |
 
 ## Known Limitations
 
-- The frontend currently uses simulated draft saving. Website refresh persistence is not yet implemented end-to-end.
-- HTTP route tests use mocked sessions and repositories. Combined real Better Auth and PostgreSQL HTTP testing, including server restart testing, remains pending.
-- Concurrent relationship deactivation during an in-flight save remains a security hardening item. Sequential deactivation checks have passed. Resolve the race before production use.
+- The frontend currently uses simulated draft saving. Website refresh
+  persistence is not yet implemented end-to-end.
+- HTTP route tests use mocked sessions and repositories. Combined real
+  Better Auth and PostgreSQL HTTP testing, including server restart
+  testing, remains pending.
+- Concurrent deactivation is protected by database row locking.
+  The deactivation-first scenario has passed integration testing.
+  The reverse ordering, where saving acquires the lock first, remains
+  untested.

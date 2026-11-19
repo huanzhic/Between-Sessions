@@ -1,7 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { setTimeout as delay } from "node:timers/promises";
 import { randomUUID } from "node:crypto";
-import { createDraftRepository } from "./repository.js";
+import {
+  createDraftRepository,
+  DraftRepositoryError,
+} from "./repository.js";
 
 test(
   "PostgreSQL draft persistence and editing",
@@ -102,36 +106,30 @@ test(
         null,
       );
 
-// Test 2: Concurrent first-time saves.
-const firstSaves = await Promise.allSettled([
-  repository.saveDraft(activityId, clientId, input),
-  repository.saveDraft(activityId, clientId, input),
-]);
+      // Test 2: Concurrent first-time saves.
+      const firstSaves = await Promise.allSettled([
+        repository.saveDraft(activityId, clientId, input),
+        repository.saveDraft(activityId, clientId, input),
+      ]);
 
-const firstSuccess = firstSaves.find(
-  result => result.status === "fulfilled",
-);
+      const firstSuccess = firstSaves.find(
+        result => result.status === "fulfilled",
+      );
 
-const firstFailure = firstSaves.find(
-  result => result.status === "rejected",
-);
+      const firstFailure = firstSaves.find(
+        result => result.status === "rejected",
+      );
 
-assert.ok(firstSuccess);
-assert.ok(firstFailure);
+      assert.ok(firstSuccess);
+      assert.ok(firstFailure);
 
-assert.match(
-  String(firstFailure.reason),
-  /STALE_DRAFT/,
-);
+      assert.ok(firstFailure.reason instanceof DraftRepositoryError);
+      assert.equal(firstFailure.reason.code, "STALE_DRAFT");
 
-const created = firstSuccess.value;
-
-assert.equal(created.version, 1);
-assert.equal(created.summary.text, "My original letter.");
+      const created = firstSuccess.value;
 
       assert.equal(created.version, 1);
       assert.equal(created.summary.text, "My original letter.");
-
       // Test 3: Retrieve the saved draft.
       const retrieved = await repository.getDraft(
         activityId,
@@ -178,7 +176,10 @@ assert.equal(created.summary.text, "My original letter.");
       // Test 6: Reject an outdated save.
       await assert.rejects(
         repository.saveDraft(activityId, clientId, input),
-        /STALE_DRAFT/,
+        {
+          name: "DraftRepositoryError",
+          code: "STALE_DRAFT",
+        },
       );
 
       // Test 7: Block another client's access.
@@ -190,7 +191,10 @@ assert.equal(created.summary.text, "My original letter.");
       // Test 8: Block another client's edits.
       await assert.rejects(
         repository.saveDraft(activityId, otherClientId, input),
-        /ACTIVITY_NOT_FOUND/,
+        {
+          name: "DraftRepositoryError",
+          code: "ACTIVITY_NOT_FOUND",
+        },
       );
 
       // Test 9: Reject invalid questions.
@@ -205,7 +209,10 @@ assert.equal(created.summary.text, "My original letter.");
             },
           ],
         }),
-        /INVALID_QUESTION/,
+        {
+          name: "DraftRepositoryError",
+          code: "INVALID_QUESTION",
+        },
       );
 
       // Test 10: Verify rejected saves changed nothing.
@@ -214,44 +221,43 @@ assert.equal(created.summary.text, "My original letter.");
         edited,
       );
 
-      // Test 12: Reject simultaneous conflicting edits.
-    const concurrentResults = await Promise.allSettled([
+      // Test 11: Reject simultaneous conflicting edits.
+      const concurrentResults = await Promise.allSettled([
         repository.saveDraft(activityId, clientId, {
-    ...input,
-    expectedVersion: 2,
-    privateWriting: "Concurrent edit A.",
-  }),
-  repository.saveDraft(activityId, clientId, {
-    ...input,
-    expectedVersion: 2,
-    privateWriting: "Concurrent edit B.",
-  }),
-]);
+          ...input,
+          expectedVersion: 2,
+          privateWriting: "Concurrent edit A.",
+        }),
+        repository.saveDraft(activityId, clientId, {
+          ...input,
+          expectedVersion: 2,
+          privateWriting: "Concurrent edit B.",
+        }),
+      ]);
 
-const successful = concurrentResults.filter(
-  result => result.status === "fulfilled",
-);
+      const successful = concurrentResults.filter(
+        result => result.status === "fulfilled",
+      );
 
-const rejected = concurrentResults.filter(
-  result => result.status === "rejected",
-);
+      const rejected = concurrentResults.filter(
+        result => result.status === "rejected",
+      );
 
-assert.equal(successful.length, 1);
-assert.equal(rejected.length, 1);
+      assert.equal(successful.length, 1);
+      assert.equal(rejected.length, 1);
 
-assert.match(
-  String(rejected[0]?.reason),
-  /STALE_DRAFT/,
-);
+      assert.ok(rejected[0]?.reason instanceof DraftRepositoryError);
+      assert.equal(rejected[0].reason.code, "STALE_DRAFT");
 
-const latest = await repository.getDraft(
-  activityId,
-  clientId,
-);
+      const latest = await repository.getDraft(
+        activityId,
+        clientId,
+      );
 
-assert.equal(latest?.version, 3);
+      assert.equal(latest?.version, 3);
+      assert.deepEqual(latest, successful[0]?.value);
 
-      // Test 11: Verify no duplicate drafts exist.
+      // Test 12: Verify no duplicate drafts exist.
       assert.equal(
         await prisma.reflectionDraft.count({
           where: { activityId, clientId },
@@ -259,23 +265,96 @@ assert.equal(latest?.version, 3);
         1,
       );
       // Test 13: Block access after relationship deactivation.
-await prisma.therapistClient.update({
-  where: { id: relationshipId },
-  data: { status: "inactive" },
-});
+      await prisma.therapistClient.update({
+        where: { id: relationshipId },
+        data: { status: "inactive" },
+      });
 
-assert.equal(
-  await repository.getDraft(activityId, clientId),
-  null,
-);
+      assert.equal(
+        await repository.getDraft(activityId, clientId),
+        null,
+      );
 
-await assert.rejects(
-  repository.saveDraft(activityId, clientId, {
-    ...input,
-    expectedVersion: 3,
-  }),
-  /ACTIVITY_NOT_FOUND/,
-);
+      await assert.rejects(
+        repository.saveDraft(activityId, clientId, {
+          ...input,
+          expectedVersion: 3,
+        }),
+        {
+          name: "DraftRepositoryError",
+          code: "ACTIVITY_NOT_FOUND",
+        },
+      );
+
+
+      await prisma.therapistClient.update({
+        where: { id: relationshipId },
+        data: { status: "active" },
+      });
+
+      assert.deepEqual(
+        await repository.getDraft(activityId, clientId),
+        latest,
+      );
+      // Test 14: Reject a save overlapping relationship deactivation.
+      const overlappingSave = await prisma.$transaction(async (tx) => {
+        await tx.therapistClient.update({
+          where: { id: relationshipId },
+          data: { status: "inactive" },
+        });
+
+        const saveResult = repository.saveDraft(activityId, clientId, {
+          ...input,
+          expectedVersion: 3,
+        }).then(
+          (value) => ({ success: true as const, value }),
+          (error: unknown) => ({ success: false as const, error }),
+        );
+
+        const deadline = Date.now() + 2000;
+        let blocked = false;
+
+        while (Date.now() < deadline) {
+          const [result] = await tx.$queryRaw<{ blocked: boolean }[]>`
+        SELECT EXISTS (
+            SELECT 1
+            FROM pg_locks
+            WHERE NOT granted
+              AND pid IS NOT NULL
+              AND pg_backend_pid() = ANY(pg_blocking_pids(pid))
+        ) AS blocked
+    `;
+
+          if (result?.blocked) {
+            blocked = true;
+            break;
+          }
+
+          await delay(25);
+        }
+
+        assert.ok(blocked, "Expected save to wait for the relationship lock");
+
+        return { saveResult };
+      }, { timeout: 10000 });
+      const outcome = await overlappingSave.saveResult;
+
+      assert.equal(outcome.success, false);
+
+      if (!outcome.success) {
+        assert.ok(outcome.error instanceof DraftRepositoryError);
+        assert.equal(outcome.error.code, "ACTIVITY_NOT_FOUND");
+      }
+
+      await prisma.therapistClient.update({
+        where: { id: relationshipId },
+        data: { status: "active" },
+      });
+
+      assert.deepEqual(
+        await repository.getDraft(activityId, clientId),
+        latest,
+      );
     } finally {
       try {
         await prisma.draftAnswer.deleteMany({
