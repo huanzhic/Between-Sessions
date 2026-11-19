@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import type { TaskRecords } from "./TaskRecords";
+import type { DemoUpdate } from "./SessionBrief";
+import type { PrivateDraft } from "./fixtures";
 import { Health } from "./Health";
 import { Client } from "./Client";
 import { Therapist } from "./Therapist";
@@ -7,6 +10,10 @@ import { initialTodoList, type TodoList, type TodoProgress } from "./Todos";
 export default function App() {
   const [todoLists, setTodoLists] = useState<TodoList[]>([initialTodoList]);
   const [todoProgress, setTodoProgress] = useState<TodoProgress>({});
+  const [taskRecords, setTaskRecords] = useState<TaskRecords>({});
+  const [topic, setTopic] = useState("");
+  const [drafts, setDrafts] = useState<Record<string, PrivateDraft>>({});
+  const [updates, setUpdates] = useState<DemoUpdate[]>([]);
   const [route, setRoute] = useState(() =>
     typeof window === "undefined"
       ? "/client"
@@ -60,6 +67,7 @@ export default function App() {
         <Therapist
           route={route}
           todoLists={todoLists}
+          updates={updates}
           onAssignTodo={(draft) => {
             const list = { ...draft, id: crypto.randomUUID() };
             setTodoLists((current) => [...current, list]);
@@ -71,6 +79,22 @@ export default function App() {
             route={route}
             todoLists={todoLists}
             todoProgress={todoProgress}
+            taskRecords={taskRecords}
+            onSaveRecords={(key, records) =>
+              setTaskRecords((current) => ({ ...current, [key]: records }))
+            }
+            topic={topic}
+            onSaveTopic={setTopic}
+            drafts={drafts}
+            setDrafts={setDrafts}
+            updates={updates}
+            onSendUpdate={(update) =>
+              setUpdates((current) =>
+                current.some((entry) => entry.id === update.id)
+                  ? current
+                  : [update, ...current],
+              )
+            }
             onSaveTodo={(listId, completed) => {
               setTodoProgress((current) => ({
                 ...current,

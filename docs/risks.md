@@ -1,5 +1,7 @@
 # Risk register
 
+The task and pre-session brief demo uses fictional records in one browser tab. Only the text confirmed by the client is copied into the demo inbox. Refresh clears demo state. See the [brief specification](project/ai-summary-spec.md).
+
 The project's only risk register, as of November 1, 2026. Ranked by likelihood and impact (High, Medium, Low), highest first. Reviewed at each sprint planning; a risk whose trigger fires becomes an issue on the board. Owners and dates marked "proposed" await team confirmation.
 
 ## Ranked risks
@@ -18,7 +20,7 @@ The project's only risk register, as of November 1, 2026. Ranked by likelihood a
 
 ## External prerequisites
 
-Frontend foundation integration note (November 4): role selection is a demo control, not authentication. Drafts exist only in React memory; refresh and role changes discard them. `/health` is the only real API connection. All business persistence, ownership, conflicts, sending policy and delivery remain unverified until Backend A/B implement their Milestone 1/2 work. Static production hosting must configure the `/api` proxy separately. Do not interpret passing UI tests as server privacy tests.
+Frontend foundation integration note (November 4): role selection is a demo control, not authentication. Drafts exist only in React memory; refresh discards them. `/health` is the only real API connection. All business persistence, ownership, conflicts, sending policy and delivery remain unverified until Backend A/B implement their Milestone 1/2 work. Static production hosting must configure the `/api` proxy separately. Do not interpret passing UI tests as server privacy tests.
 
 | Prerequisite | Needed for | Who asks | Who decides | Asked on | Status |
 | --- | --- | --- | --- | --- | --- |

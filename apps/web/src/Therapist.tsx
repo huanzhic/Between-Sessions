@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { DemoUpdate } from "./SessionBrief";
 import { activity, inbox } from "./fixtures";
 import { AssignTodos, type TodoDraft, type TodoList } from "./Todos";
 
@@ -6,19 +7,24 @@ const links = [
   ["Overview", "/therapist"],
   ["Clients", "/therapist/clients"],
   ["Letters", "/therapist/letters"],
-  ["To-do lists", "/therapist/tasks"],
+  ["Tasks", "/therapist/tasks"],
   ["Settings", "/therapist/settings"],
 ];
 export function Therapist({
   route,
   todoLists,
   onAssignTodo,
+  updates,
 }: {
   route: string;
+  updates: DemoUpdate[];
   todoLists: TodoList[];
   onAssignTodo: (draft: TodoDraft) => void;
 }) {
   const [empty, setEmpty] = useState(false);
+  const update = updates.find(
+    (entry) => route === "/therapist/letters/" + entry.id,
+  );
   const list = (
     <>
       <label className="check">
@@ -35,17 +41,30 @@ export function Therapist({
           <p>Letters appear here only after a client chooses to send one.</p>
         </div>
       ) : (
-        inbox.map((letter) => (
-          <a
-            className="card letter-row"
-            href={`#/therapist/letters/${letter.id}`}
-            key={letter.id}
-          >
-            <h2>{letter.sender.displayName}</h2>
-            <p>{activity.topic}</p>
-            <small>Example sent Nov 3, 2026 · Appointment Nov 5</small>
-          </a>
-        ))
+        <>
+          {updates.map((entry) => (
+            <a
+              className="card letter-row"
+              href={"#/therapist/letters/" + entry.id}
+              key={entry.id}
+            >
+              <h2>Maya Chen</h2>
+              <p>Between-session update</p>
+              <small>{entry.period} · Demo update</small>
+            </a>
+          ))}
+          {inbox.map((letter) => (
+            <a
+              className="card letter-row"
+              href={`#/therapist/letters/${letter.id}`}
+              key={letter.id}
+            >
+              <h2>{letter.sender.displayName}</h2>
+              <p>{activity.topic}</p>
+              <small>Example sent Nov 3, 2026 · Appointment Nov 5</small>
+            </a>
+          ))}
+        </>
       )}
     </>
   );
@@ -122,7 +141,7 @@ export function Therapist({
           </>
         ) : route === "/therapist/tasks" ? (
           <>
-            <h1>To-do lists</h1>
+            <h1>Tasks</h1>
             <AssignTodos lists={todoLists} onAssign={onAssignTodo} />
           </>
         ) : route === "/therapist/settings" ? (
@@ -135,6 +154,16 @@ export function Therapist({
             <a className="button secondary" href="#/client">
               Open client demo
             </a>
+          </>
+        ) : update ? (
+          <>
+            <a href="#/therapist/letters">Back to letters</a>
+            <h1>Between-session update from Maya Chen</h1>
+            <p>{update.period} · Demo update</p>
+            <article className="card letter">
+              <h2>To Dr. Lee</h2>
+              <p className="brief-body">{update.body}</p>
+            </article>
           </>
         ) : route === "/therapist/letters/letter-maya" ? (
           <>

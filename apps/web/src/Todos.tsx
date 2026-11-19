@@ -1,7 +1,29 @@
 import { useRef, useState } from "react";
+import {
+  TaskRecordEditor,
+  type TaskRecord,
+  type TaskRecords,
+} from "./TaskRecords";
 import { activity } from "./fixtures";
 
-type TodoItem = { id: number; text: string; kind: "checklist" | "reflection" };
+export type TodoItem = {
+  id: number;
+  text: string;
+  kind: "checklist" | "reflection" | "event" | "activity";
+  focus?: string;
+  target?: number;
+};
+
+export function taskKey(listId: string, itemId: number) {
+  return listId + "/" + itemId;
+}
+
+const taskLabels = {
+  checklist: "Checklist item",
+  reflection: "Reflection",
+  event: "Note an event",
+  activity: "Track an activity",
+};
 export type TodoDraft = {
   title: string;
   items: TodoItem[];
@@ -37,7 +59,7 @@ export function AssignTodos({
     <>
       <section className="card">
         <h2>Assign a to-do list</h2>
-        <p>Choose steps for your client to work through between sessions.</p>
+        <p>Choose what your client can record before the next session.</p>
         <form
           className="task-form"
           onSubmit={(event) => {
@@ -81,13 +103,12 @@ export function AssignTodos({
                 id={`todo-kind-${item.id}`}
                 value={item.kind}
                 onChange={(event) => {
-                  const kind =
-                    event.target.value === "reflection"
-                      ? "reflection"
-                      : "checklist";
+                  const kind = event.target.value as TodoItem["kind"];
                   setItems((current) =>
                     current.map((entry) =>
-                      entry.id === item.id ? { ...entry, kind } : entry,
+                      entry.id === item.id
+                        ? { ...entry, kind, target: undefined }
+                        : entry,
                     ),
                   );
                   setPreview(null);
@@ -95,6 +116,8 @@ export function AssignTodos({
                 }}
               >
                 <option value="checklist">Checklist item</option>
+                <option value="event">Note an event</option>
+                <option value="activity">Track an activity</option>
                 <option value="reflection">Reflection</option>
               </select>
               <label htmlFor={`todo-item-${item.id}`}>
@@ -115,6 +138,44 @@ export function AssignTodos({
                   setStatus("");
                 }}
               />
+              {item.kind === "activity" && (
+                <label className="task-field">
+                  Target count (optional)
+                  <input
+                    type="number"
+                    min={1}
+                    max={999}
+                    step={1}
+                    value={item.target ?? ""}
+                    onChange={(event) => {
+                      const target = event.target.value
+                        ? event.target.valueAsNumber
+                        : undefined;
+                      setItems((current) =>
+                        current.map((entry) =>
+                          entry.id === item.id ? { ...entry, target } : entry,
+                        ),
+                      );
+                      setPreview(null);
+                    }}
+                  />
+                </label>
+              )}
+              <label className="task-field">
+                What would you like to know before the next session? (optional)
+                <input
+                  value={item.focus ?? ""}
+                  onChange={(event) => {
+                    const focus = event.target.value;
+                    setItems((current) =>
+                      current.map((entry) =>
+                        entry.id === item.id ? { ...entry, focus } : entry,
+                      ),
+                    );
+                    setPreview(null);
+                  }}
+                />
+              </label>
               {items.length > 1 && (
                 <button
                   type="button"
@@ -160,7 +221,9 @@ export function AssignTodos({
               {preview.items.map((item) => (
                 <li key={item.id}>
                   {item.text}
-                  {item.kind === "reflection" && " · Reflection"}
+                  {item.kind !== "checklist" && " · " + taskLabels[item.kind]}
+                  {item.target !== undefined && " · Target: " + item.target}
+                  {item.focus && <p>{item.focus}</p>}
                 </li>
               ))}
             </ul>
@@ -192,7 +255,9 @@ export function AssignTodos({
               {list.items.map((item) => (
                 <li key={item.id}>
                   {item.text}
-                  {item.kind === "reflection" && " · Reflection"}
+                  {item.kind !== "checklist" && " · " + taskLabels[item.kind]}
+                  {item.target !== undefined && " · Target: " + item.target}
+                  {item.focus && <p>{item.focus}</p>}
                 </li>
               ))}
             </ul>
@@ -207,11 +272,18 @@ export function ClientTodoList({
   list,
   saved,
   onSave,
+  records,
+  onSaveRecords,
 }: {
   list: TodoList;
   saved: number[];
   onSave: (listId: string, completed: number[]) => void;
+  records: TaskRecords;
+  onSaveRecords: (key: string, records: TaskRecord[]) => void;
 }) {
+  const checklistCount = list.items.filter(
+    (item) => item.kind === "checklist" || item.kind === "reflection",
+  ).length;
   const [completed, setCompleted] = useState(saved);
   const [status, setStatus] = useState("");
   const [simulateFailure, setSimulateFailure] = useState(false);
@@ -239,28 +311,45 @@ export function ClientTodoList({
     <section className="card">
       <h2>{list.title}</h2>
       <p>
-        {completed.length} of {list.items.length} complete · Assigned by Dr. Lee
+        {checklistCount > 0 &&
+          completed.length + " of " + checklistCount + " complete · "}
+        Assigned by Dr. Lee
       </p>
       <div role="group" aria-label={list.title}>
         {list.items.map((item) => (
-          <div key={item.id}>
-            <label className="check">
-              <input
-                type="checkbox"
-                checked={completed.includes(item.id)}
-                disabled={saving}
-                onChange={(event) => {
-                  const checked = event.target.checked;
-                  setCompleted((current) =>
-                    checked
-                      ? [...current, item.id]
-                      : current.filter((id) => id !== item.id),
-                  );
-                  setStatus("");
-                }}
+          <div key={item.id} className="task-row">
+            {item.kind === "event" || item.kind === "activity" ? (
+              <h3>{item.text}</h3>
+            ) : (
+              <label className="check">
+                <input
+                  type="checkbox"
+                  checked={completed.includes(item.id)}
+                  disabled={saving}
+                  onChange={(event) => {
+                    const checked = event.target.checked;
+                    setCompleted((current) =>
+                      checked
+                        ? [...current, item.id]
+                        : current.filter((id) => id !== item.id),
+                    );
+                    setStatus("");
+                  }}
+                />
+                {item.text}
+              </label>
+            )}
+            {item.focus && <p>{item.focus}</p>}
+            {item.kind !== "reflection" && (
+              <TaskRecordEditor
+                item={item}
+                records={records[taskKey(list.id, item.id)] ?? []}
+                onSave={(next) =>
+                  onSaveRecords(taskKey(list.id, item.id), next)
+                }
+                simulateFailure={simulateFailure}
               />
-              {item.text}
-            </label>
+            )}
             {item.kind === "reflection" && (
               <a
                 href={`#${reflectionPath(list.id, item.id)}`}
@@ -279,13 +368,17 @@ export function ClientTodoList({
           disabled={saving}
           onChange={(event) => setSimulateFailure(event.target.checked)}
         />
-        Simulate progress save failure
+        {checklistCount
+          ? "Simulate progress save failure"
+          : "Simulate record save failure"}
       </label>
-      <button disabled={saving || !changed} onClick={save}>
-        {status.startsWith("Save failed")
-          ? "Retry saving progress"
-          : "Save demo progress"}
-      </button>
+      {checklistCount > 0 && (
+        <button disabled={saving || !changed} onClick={save}>
+          {status.startsWith("Save failed")
+            ? "Retry saving progress"
+            : "Save demo progress"}
+        </button>
+      )}
       {status && <p role="status">{status}</p>}
     </section>
   );

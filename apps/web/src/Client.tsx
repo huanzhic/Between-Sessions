@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
+import { SessionBrief, briefSources, type DemoUpdate } from "./SessionBrief";
+import type { TaskRecord, TaskRecords } from "./TaskRecords";
 import { activity, inbox, newDraft, type PrivateDraft } from "./fixtures";
 import {
   ClientTodoList,
@@ -13,8 +15,24 @@ export function Client({
   todoLists,
   todoProgress,
   onSaveTodo,
+  taskRecords,
+  onSaveRecords,
+  topic,
+  onSaveTopic,
+  drafts,
+  setDrafts,
+  updates,
+  onSendUpdate,
 }: {
   route: string;
+  taskRecords: TaskRecords;
+  onSaveRecords: (key: string, records: TaskRecord[]) => void;
+  topic: string;
+  onSaveTopic: (topic: string) => void;
+  drafts: Record<string, PrivateDraft>;
+  setDrafts: Dispatch<SetStateAction<Record<string, PrivateDraft>>>;
+  updates: DemoUpdate[];
+  onSendUpdate: (update: DemoUpdate) => void;
   todoLists: TodoList[];
   todoProgress: TodoProgress;
   onSaveTodo: (listId: string, completed: number[]) => void;
@@ -31,7 +49,7 @@ export function Client({
     ),
   )[0];
   const draftKey = reflection ? reflectionRoute : "/client/summary";
-  const [drafts, setDrafts] = useState<Record<string, PrivateDraft>>({});
+  const [topicDraft, setTopicDraft] = useState(topic);
   const draft = drafts[draftKey] ?? newDraft();
   const [questions, setQuestions] = useState<Record<string, number>>({});
   const question = questions[reflectionRoute] ?? 0;
@@ -39,7 +57,13 @@ export function Client({
   const save = saveStatuses[draftKey] ?? "Not saved · demo only";
   const [fail, setFail] = useState(false);
   const [busy, setBusy] = useState(false);
-  const q = activity.questions[question];
+  const isStarterReflection =
+    reflectionRoute ===
+    reflectionPath(initialTodoList.id, initialTodoList.items[0].id);
+  const prompts = isStarterReflection
+    ? activity.questions
+    : [activity.questions[0]];
+  const q = prompts[question];
   function setDraft(update: (value: PrivateDraft) => PrivateDraft) {
     setDrafts((current) => ({
       ...current,
@@ -85,6 +109,7 @@ export function Client({
         "/client/review",
         "/client/letters",
         "/client/todos",
+        "/client/update",
       ].includes(route));
   return (
     <main
@@ -106,21 +131,33 @@ export function Client({
           </p>
           <Privacy />
           <section className="card">
-            <h2>To-do lists</h2>
+            <h2>Tasks</h2>
             {todoLists.length === 0 ? (
-              <p>No to-do lists assigned yet.</p>
+              <p>No tasks assigned yet.</p>
             ) : (
               <ul>
                 {todoLists.map((list) => (
                   <li key={list.id}>
-                    {list.title} · {todoProgress[list.id]?.length ?? 0} of{" "}
-                    {list.items.length} complete
+                    {list.title}
+                    {list.items.some(
+                      (item) =>
+                        item.kind === "checklist" || item.kind === "reflection",
+                    ) &&
+                      " · " +
+                        (todoProgress[list.id]?.length ?? 0) +
+                        " of " +
+                        list.items.filter(
+                          (item) =>
+                            item.kind === "checklist" ||
+                            item.kind === "reflection",
+                        ).length +
+                        " complete"}
                   </li>
                 ))}
               </ul>
             )}
             <a className="button secondary" href="#/client/todos">
-              View to-do lists
+              View tasks
             </a>
           </section>
           <Appointment />
@@ -131,26 +168,63 @@ export function Client({
       ) : route === "/client/todos" ? (
         <>
           <a href="#/client">Back to home</a>
-          <h1>To-do lists</h1>
-          <p>
-            Your checkmarks are private. You can write your summary at any time.
-          </p>
-          {todoLists.length === 0 && <p>No to-do lists assigned yet.</p>}
+          <h1>Tasks</h1>
+          <p>Your records stay private until you choose what to share.</p>
+          {todoLists.length === 0 && <p>No tasks assigned yet.</p>}
           {todoLists.map((list) => (
             <ClientTodoList
               key={list.id}
               list={list}
               saved={todoProgress[list.id] ?? []}
               onSave={onSaveTodo}
+              records={taskRecords}
+              onSaveRecords={onSaveRecords}
             />
           ))}
-          <a className="button secondary" href="#/client/summary">
-            Write your summary
-          </a>
+          <form
+            className="card task-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              onSaveTopic(topicDraft.trim());
+            }}
+          >
+            <h2>Bring up next time</h2>
+            <label className="task-field" htmlFor="next-topic">
+              What would you like to talk about?
+              <textarea
+                id="next-topic"
+                rows={3}
+                value={topicDraft}
+                onChange={(e) => setTopicDraft(e.target.value)}
+              />
+            </label>
+            <button
+              className="secondary"
+              disabled={topic === topicDraft.trim()}
+            >
+              Save topic
+            </button>
+            {topic && topic === topicDraft.trim() && (
+              <p role="status">Topic saved privately.</p>
+            )}
+          </form>
+          <div className="actions">
+            <a className="button" href="#/client/update">
+              Prepare update for Dr. Lee
+            </a>
+            <a className="button secondary" href="#/client/summary">
+              Write your summary
+            </a>
+          </div>
         </>
+      ) : route === "/client/update" ? (
+        <SessionBrief
+          sources={briefSources(todoLists, todoProgress, taskRecords, topic)}
+          onSend={onSendUpdate}
+        />
       ) : reflection ? (
         <>
-          <a href="#/client/todos">Back to to-do lists</a>
+          <a href="#/client/todos">Back to tasks</a>
           <div className="writing-layout">
             <aside className="writing-context">
               <h2>{reflection.text}</h2>
@@ -158,10 +232,14 @@ export function Client({
               <Appointment />
             </aside>
             <section className="editor">
-              <h1>{q.prompt}</h1>
+              <h1>
+                {isStarterReflection
+                  ? q.prompt
+                  : reflection.focus || "What would you like to record?"}
+              </h1>
               <p>
-                Question {question + 1} of {activity.questions.length} · You may
-                skip any question.
+                Question {question + 1} of {prompts.length} · You may skip any
+                question.
               </p>
               <label htmlFor="answer">Your private answer</label>
               <textarea
@@ -194,7 +272,7 @@ export function Client({
                 >
                   Previous
                 </button>
-                {question < activity.questions.length - 1 ? (
+                {question < prompts.length - 1 ? (
                   <button
                     disabled={busy}
                     onClick={() => setQuestion((n) => n + 1)}
@@ -203,7 +281,7 @@ export function Client({
                   </button>
                 ) : (
                   <a className="button" href="#/client/todos">
-                    Return to to-do lists
+                    Return to tasks
                   </a>
                 )}
               </div>
@@ -213,7 +291,7 @@ export function Client({
         </>
       ) : route === "/client/summary" ? (
         <>
-          <a href="#/client/todos">Back to to-do lists</a>
+          <a href="#/client/todos">Back to tasks</a>
           <h1>What would you like to bring?</h1>
           <p>Write your own letter. You decide what to share.</p>
           <label htmlFor="summary">Your letter draft</label>
@@ -269,7 +347,14 @@ export function Client({
       ) : (
         <>
           <h1>Sent letters</h1>
-          <p>Fictional examples · these were not sent by this app.</p>
+          <p>Fictional demo letters in this tab.</p>
+          {updates.map((update) => (
+            <article className="card letter" key={update.id}>
+              <h2>To Dr. Lee</h2>
+              <small>{update.period} · Demo update</small>
+              <p className="brief-body">{update.body}</p>
+            </article>
+          ))}
           {inbox.map((letter) => (
             <article className="card letter" key={letter.id}>
               <h2>To {letter.recipient.displayName}</h2>

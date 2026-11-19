@@ -1,5 +1,7 @@
 # Requirements
 
+The task and pre-session brief demo uses fictional records in one browser tab. Only the text confirmed by the client is copied into the demo inbox. Refresh clears demo state. See the [brief specification](project/ai-summary-spec.md).
+
 Between Sessions, updated November 4, 2026. FR-1 and FR-2 are implemented. The Milestone 1 frontend additionally demonstrates role shells, reflection editing, simulated save/error/retry, letter preview and independent SOS placeholder with fictional data. These UI demonstrations do not satisfy the backend, persistence, authorization or actual-send acceptance criteria below. The detailed acceptance checklist and data-visibility matrix are in [MVP scope and architecture](project/mvp-scope-and-architecture.md).
 
 **Status labels.** *Implemented*: runs at this commit, with a CI test. *Partner-stated*: raised by Justin in a recorded meeting. *Assumption*: proposed by the team and not yet confirmed by the partner.
